@@ -1,0 +1,10 @@
+.eggs
+.pytest_cache
+__pycache__
+aule.egg-info
+build
+dist
+tmp
+docs
+.DS_Store
+*~

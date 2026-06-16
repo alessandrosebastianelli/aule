@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aule"
+version = "0.1.0"
+authors = [
+  { name="Alessandro Sebastianelli", email="alessandro.sebastianelli1995@gmail.com" },
+]
+description = "Validation metrics and plots for machine learning models, with a focus on earth observation and climate science."
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Atmospheric Science",
+]
+dependencies = [
+  "numpy",
+  "scipy",
+  "matplotlib",
+]
+
+[project.optional-dependencies]
+geo = ["cartopy"]
+dev = ["pytest"]
+
+[project.urls]
+"Homepage" = "https://github.com/alessandrosebastianelli/aule"
+"Bug Tracker" = "https://github.com/alessandrosebastianelli/aule/issues"
+
+[tool.setuptools.packages.find]
+include = ["aule*"]
