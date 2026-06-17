@@ -40,6 +40,15 @@
             <li>
                     <a class="function" href="#rank_histogram">rank_histogram</a>
             </li>
+            <li>
+                    <a class="function" href="#brier_score">brier_score</a>
+            </li>
+            <li>
+                    <a class="function" href="#spread_skill_ratio">spread_skill_ratio</a>
+            </li>
+            <li>
+                    <a class="function" href="#crps_skill_score">crps_skill_score</a>
+            </li>
     </ul>
 
 
@@ -84,7 +93,7 @@ the 4 standard shapes (a/b/c/d) and ground truth has no ensemble axis.</p>
 </span><span id="L-13"><a href="#L-13"><span class="linenos"> 13</span></a>
 </span><span id="L-14"><a href="#L-14"><span class="linenos"> 14</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.._shapes</span><span class="w"> </span><span class="kn">import</span> <span class="n">to_canonical</span><span class="p">,</span> <span class="n">apply_nan_mask</span><span class="p">,</span> <span class="n">finite_mask</span>
 </span><span id="L-15"><a href="#L-15"><span class="linenos"> 15</span></a>
-</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ensemble_spread&quot;</span><span class="p">,</span> <span class="s2">&quot;crps&quot;</span><span class="p">,</span> <span class="s2">&quot;rank_histogram&quot;</span><span class="p">]</span>
+</span><span id="L-16"><a href="#L-16"><span class="linenos"> 16</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ensemble_spread&quot;</span><span class="p">,</span> <span class="s2">&quot;crps&quot;</span><span class="p">,</span> <span class="s2">&quot;rank_histogram&quot;</span><span class="p">,</span> <span class="s2">&quot;brier_score&quot;</span><span class="p">,</span> <span class="s2">&quot;spread_skill_ratio&quot;</span><span class="p">,</span> <span class="s2">&quot;crps_skill_score&quot;</span><span class="p">]</span>
 </span><span id="L-17"><a href="#L-17"><span class="linenos"> 17</span></a>
 </span><span id="L-18"><a href="#L-18"><span class="linenos"> 18</span></a>
 </span><span id="L-19"><a href="#L-19"><span class="linenos"> 19</span></a><span class="k">def</span><span class="w"> </span><span class="nf">ensemble_spread</span><span class="p">(</span>
@@ -267,6 +276,188 @@ the 4 standard shapes (a/b/c/d) and ground truth has no ensemble axis.</p>
 </span><span id="L-196"><a href="#L-196"><span class="linenos">196</span></a>    <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">ranks</span><span class="p">,</span> <span class="n">minlength</span><span class="o">=</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[:</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
 </span><span id="L-197"><a href="#L-197"><span class="linenos">197</span></a>
 </span><span id="L-198"><a href="#L-198"><span class="linenos">198</span></a>    <span class="k">return</span> <span class="n">counts</span>
+</span><span id="L-199"><a href="#L-199"><span class="linenos">199</span></a>
+</span><span id="L-200"><a href="#L-200"><span class="linenos">200</span></a>
+</span><span id="L-201"><a href="#L-201"><span class="linenos">201</span></a><span class="k">def</span><span class="w"> </span><span class="nf">brier_score</span><span class="p">(</span>
+</span><span id="L-202"><a href="#L-202"><span class="linenos">202</span></a>    <span class="n">y_true</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-203"><a href="#L-203"><span class="linenos">203</span></a>    <span class="n">y_ensemble</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-204"><a href="#L-204"><span class="linenos">204</span></a>    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span id="L-205"><a href="#L-205"><span class="linenos">205</span></a>    <span class="n">data_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-206"><a href="#L-206"><span class="linenos">206</span></a>    <span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-207"><a href="#L-207"><span class="linenos">207</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-208"><a href="#L-208"><span class="linenos">208</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="L-209"><a href="#L-209"><span class="linenos">209</span></a><span class="sd">        Computes the Brier score for the binary event &quot;value exceeds</span>
+</span><span id="L-210"><a href="#L-210"><span class="linenos">210</span></a><span class="sd">        threshold&quot;, using the ensemble fraction exceeding the threshold as</span>
+</span><span id="L-211"><a href="#L-211"><span class="linenos">211</span></a><span class="sd">        the predicted probability. Standard verification metric for</span>
+</span><span id="L-212"><a href="#L-212"><span class="linenos">212</span></a><span class="sd">        probabilistic forecasts of binary events (e.g. probability of</span>
+</span><span id="L-213"><a href="#L-213"><span class="linenos">213</span></a><span class="sd">        exceeding a rainfall or temperature threshold).</span>
+</span><span id="L-214"><a href="#L-214"><span class="linenos">214</span></a>
+</span><span id="L-215"><a href="#L-215"><span class="linenos">215</span></a><span class="sd">        Parameters:</span>
+</span><span id="L-216"><a href="#L-216"><span class="linenos">216</span></a><span class="sd">        -----------</span>
+</span><span id="L-217"><a href="#L-217"><span class="linenos">217</span></a><span class="sd">        - y_true : np.ndarray</span>
+</span><span id="L-218"><a href="#L-218"><span class="linenos">218</span></a><span class="sd">            Ground truth array, any of the 4 supported shapes (no ensemble axis).</span>
+</span><span id="L-219"><a href="#L-219"><span class="linenos">219</span></a><span class="sd">        - y_ensemble : np.ndarray</span>
+</span><span id="L-220"><a href="#L-220"><span class="linenos">220</span></a><span class="sd">            Ensemble array of shape (n_members, *single_member_shape).</span>
+</span><span id="L-221"><a href="#L-221"><span class="linenos">221</span></a><span class="sd">        - threshold : float</span>
+</span><span id="L-222"><a href="#L-222"><span class="linenos">222</span></a><span class="sd">            Threshold defining the binary event (value &gt; threshold).</span>
+</span><span id="L-223"><a href="#L-223"><span class="linenos">223</span></a><span class="sd">        - data_format : str</span>
+</span><span id="L-224"><a href="#L-224"><span class="linenos">224</span></a><span class="sd">            &quot;bhwc&quot; or &quot;hwct&quot;, required only when arrays are 4D.</span>
+</span><span id="L-225"><a href="#L-225"><span class="linenos">225</span></a><span class="sd">        - ignore_nan : bool</span>
+</span><span id="L-226"><a href="#L-226"><span class="linenos">226</span></a><span class="sd">            If True, non-finite ground truth positions are excluded (default: False).</span>
+</span><span id="L-227"><a href="#L-227"><span class="linenos">227</span></a>
+</span><span id="L-228"><a href="#L-228"><span class="linenos">228</span></a><span class="sd">        Returns:</span>
+</span><span id="L-229"><a href="#L-229"><span class="linenos">229</span></a><span class="sd">        --------</span>
+</span><span id="L-230"><a href="#L-230"><span class="linenos">230</span></a><span class="sd">        - value : float</span>
+</span><span id="L-231"><a href="#L-231"><span class="linenos">231</span></a><span class="sd">            Brier score in [0, 1]. Lower is better (0 = perfect probabilistic forecast).</span>
+</span><span id="L-232"><a href="#L-232"><span class="linenos">232</span></a>
+</span><span id="L-233"><a href="#L-233"><span class="linenos">233</span></a><span class="sd">        Usage:</span>
+</span><span id="L-234"><a href="#L-234"><span class="linenos">234</span></a><span class="sd">        ------</span>
+</span><span id="L-235"><a href="#L-235"><span class="linenos">235</span></a>
+</span><span id="L-236"><a href="#L-236"><span class="linenos">236</span></a><span class="sd">        ```python</span>
+</span><span id="L-237"><a href="#L-237"><span class="linenos">237</span></a><span class="sd">        import numpy as np</span>
+</span><span id="L-238"><a href="#L-238"><span class="linenos">238</span></a><span class="sd">        from aule.metrics import brier_score</span>
+</span><span id="L-239"><a href="#L-239"><span class="linenos">239</span></a>
+</span><span id="L-240"><a href="#L-240"><span class="linenos">240</span></a><span class="sd">        gt       = np.random.rand(64, 64, 1)</span>
+</span><span id="L-241"><a href="#L-241"><span class="linenos">241</span></a><span class="sd">        ensemble = gt[np.newaxis] + np.random.normal(0, 0.1, (10, 64, 64, 1))</span>
+</span><span id="L-242"><a href="#L-242"><span class="linenos">242</span></a><span class="sd">        score = brier_score(gt, ensemble, threshold=0.7)</span>
+</span><span id="L-243"><a href="#L-243"><span class="linenos">243</span></a><span class="sd">        ```</span>
+</span><span id="L-244"><a href="#L-244"><span class="linenos">244</span></a><span class="sd">    &#39;&#39;&#39;</span>
+</span><span id="L-245"><a href="#L-245"><span class="linenos">245</span></a>
+</span><span id="L-246"><a href="#L-246"><span class="linenos">246</span></a>    <span class="n">y_true_c</span> <span class="o">=</span> <span class="n">to_canonical</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span>
+</span><span id="L-247"><a href="#L-247"><span class="linenos">247</span></a>    <span class="n">canonical_members</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_canonical</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">y_ensemble</span><span class="p">]</span>
+</span><span id="L-248"><a href="#L-248"><span class="linenos">248</span></a>    <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">canonical_members</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># (M, B, H, W, C, T)</span>
+</span><span id="L-249"><a href="#L-249"><span class="linenos">249</span></a>
+</span><span id="L-250"><a href="#L-250"><span class="linenos">250</span></a>    <span class="n">observed</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_true_c</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span><span id="L-251"><a href="#L-251"><span class="linenos">251</span></a>    <span class="n">forecast_prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">stacked</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="L-252"><a href="#L-252"><span class="linenos">252</span></a>
+</span><span id="L-253"><a href="#L-253"><span class="linenos">253</span></a>    <span class="n">sq_error</span> <span class="o">=</span> <span class="p">(</span><span class="n">forecast_prob</span> <span class="o">-</span> <span class="n">observed</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+</span><span id="L-254"><a href="#L-254"><span class="linenos">254</span></a>
+</span><span id="L-255"><a href="#L-255"><span class="linenos">255</span></a>    <span class="k">if</span> <span class="n">ignore_nan</span><span class="p">:</span>
+</span><span id="L-256"><a href="#L-256"><span class="linenos">256</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">observed</span><span class="p">)</span>
+</span><span id="L-257"><a href="#L-257"><span class="linenos">257</span></a>        <span class="n">sq_error</span> <span class="o">=</span> <span class="n">sq_error</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="L-258"><a href="#L-258"><span class="linenos">258</span></a>
+</span><span id="L-259"><a href="#L-259"><span class="linenos">259</span></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sq_error</span><span class="p">))</span>
+</span><span id="L-260"><a href="#L-260"><span class="linenos">260</span></a>
+</span><span id="L-261"><a href="#L-261"><span class="linenos">261</span></a>
+</span><span id="L-262"><a href="#L-262"><span class="linenos">262</span></a><span class="k">def</span><span class="w"> </span><span class="nf">spread_skill_ratio</span><span class="p">(</span>
+</span><span id="L-263"><a href="#L-263"><span class="linenos">263</span></a>    <span class="n">y_true</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-264"><a href="#L-264"><span class="linenos">264</span></a>    <span class="n">y_ensemble</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-265"><a href="#L-265"><span class="linenos">265</span></a>    <span class="n">data_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-266"><a href="#L-266"><span class="linenos">266</span></a>    <span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-267"><a href="#L-267"><span class="linenos">267</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-268"><a href="#L-268"><span class="linenos">268</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="L-269"><a href="#L-269"><span class="linenos">269</span></a><span class="sd">        Computes the ratio between the ensemble spread (mean standard</span>
+</span><span id="L-270"><a href="#L-270"><span class="linenos">270</span></a><span class="sd">        deviation across members) and the RMSE of the ensemble mean against</span>
+</span><span id="L-271"><a href="#L-271"><span class="linenos">271</span></a><span class="sd">        the ground truth. A well-calibrated ensemble has a ratio close to 1:</span>
+</span><span id="L-272"><a href="#L-272"><span class="linenos">272</span></a><span class="sd">        values below 1 indicate under-dispersion (overconfident ensemble),</span>
+</span><span id="L-273"><a href="#L-273"><span class="linenos">273</span></a><span class="sd">        values above 1 indicate over-dispersion.</span>
+</span><span id="L-274"><a href="#L-274"><span class="linenos">274</span></a>
+</span><span id="L-275"><a href="#L-275"><span class="linenos">275</span></a><span class="sd">        Parameters:</span>
+</span><span id="L-276"><a href="#L-276"><span class="linenos">276</span></a><span class="sd">        -----------</span>
+</span><span id="L-277"><a href="#L-277"><span class="linenos">277</span></a><span class="sd">        - y_true : np.ndarray</span>
+</span><span id="L-278"><a href="#L-278"><span class="linenos">278</span></a><span class="sd">            Ground truth array, any of the 4 supported shapes (no ensemble axis).</span>
+</span><span id="L-279"><a href="#L-279"><span class="linenos">279</span></a><span class="sd">        - y_ensemble : np.ndarray</span>
+</span><span id="L-280"><a href="#L-280"><span class="linenos">280</span></a><span class="sd">            Ensemble array of shape (n_members, *single_member_shape).</span>
+</span><span id="L-281"><a href="#L-281"><span class="linenos">281</span></a><span class="sd">        - data_format : str</span>
+</span><span id="L-282"><a href="#L-282"><span class="linenos">282</span></a><span class="sd">            &quot;bhwc&quot; or &quot;hwct&quot;, required only when arrays are 4D.</span>
+</span><span id="L-283"><a href="#L-283"><span class="linenos">283</span></a><span class="sd">        - ignore_nan : bool</span>
+</span><span id="L-284"><a href="#L-284"><span class="linenos">284</span></a><span class="sd">            If True, non-finite values are excluded from both terms (default: False).</span>
+</span><span id="L-285"><a href="#L-285"><span class="linenos">285</span></a>
+</span><span id="L-286"><a href="#L-286"><span class="linenos">286</span></a><span class="sd">        Returns:</span>
+</span><span id="L-287"><a href="#L-287"><span class="linenos">287</span></a><span class="sd">        --------</span>
+</span><span id="L-288"><a href="#L-288"><span class="linenos">288</span></a><span class="sd">        - value : float</span>
+</span><span id="L-289"><a href="#L-289"><span class="linenos">289</span></a><span class="sd">            Spread/skill ratio. 1.0 indicates good calibration.</span>
+</span><span id="L-290"><a href="#L-290"><span class="linenos">290</span></a>
+</span><span id="L-291"><a href="#L-291"><span class="linenos">291</span></a><span class="sd">        Usage:</span>
+</span><span id="L-292"><a href="#L-292"><span class="linenos">292</span></a><span class="sd">        ------</span>
+</span><span id="L-293"><a href="#L-293"><span class="linenos">293</span></a>
+</span><span id="L-294"><a href="#L-294"><span class="linenos">294</span></a><span class="sd">        ```python</span>
+</span><span id="L-295"><a href="#L-295"><span class="linenos">295</span></a><span class="sd">        import numpy as np</span>
+</span><span id="L-296"><a href="#L-296"><span class="linenos">296</span></a><span class="sd">        from aule.metrics import spread_skill_ratio</span>
+</span><span id="L-297"><a href="#L-297"><span class="linenos">297</span></a>
+</span><span id="L-298"><a href="#L-298"><span class="linenos">298</span></a><span class="sd">        gt       = np.random.rand(64, 64, 1)</span>
+</span><span id="L-299"><a href="#L-299"><span class="linenos">299</span></a><span class="sd">        ensemble = gt[np.newaxis] + np.random.normal(0, 0.1, (10, 64, 64, 1))</span>
+</span><span id="L-300"><a href="#L-300"><span class="linenos">300</span></a><span class="sd">        ratio = spread_skill_ratio(gt, ensemble)</span>
+</span><span id="L-301"><a href="#L-301"><span class="linenos">301</span></a><span class="sd">        ```</span>
+</span><span id="L-302"><a href="#L-302"><span class="linenos">302</span></a><span class="sd">    &#39;&#39;&#39;</span>
+</span><span id="L-303"><a href="#L-303"><span class="linenos">303</span></a>
+</span><span id="L-304"><a href="#L-304"><span class="linenos">304</span></a>    <span class="n">y_true_c</span> <span class="o">=</span> <span class="n">to_canonical</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span>
+</span><span id="L-305"><a href="#L-305"><span class="linenos">305</span></a>    <span class="n">canonical_members</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_canonical</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">y_ensemble</span><span class="p">]</span>
+</span><span id="L-306"><a href="#L-306"><span class="linenos">306</span></a>    <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">canonical_members</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># (M, B, H, W, C, T)</span>
+</span><span id="L-307"><a href="#L-307"><span class="linenos">307</span></a>
+</span><span id="L-308"><a href="#L-308"><span class="linenos">308</span></a>    <span class="n">ensemble_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">stacked</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="L-309"><a href="#L-309"><span class="linenos">309</span></a>
+</span><span id="L-310"><a href="#L-310"><span class="linenos">310</span></a>    <span class="k">if</span> <span class="n">ignore_nan</span><span class="p">:</span>
+</span><span id="L-311"><a href="#L-311"><span class="linenos">311</span></a>        <span class="n">spread</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">stacked</span><span class="p">),</span> <span class="n">stacked</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</span><span id="L-312"><a href="#L-312"><span class="linenos">312</span></a>        <span class="n">diff</span> <span class="o">=</span> <span class="n">ensemble_mean</span> <span class="o">-</span> <span class="n">y_true_c</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span><span id="L-313"><a href="#L-313"><span class="linenos">313</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+</span><span id="L-314"><a href="#L-314"><span class="linenos">314</span></a>        <span class="n">rmse_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+</span><span id="L-315"><a href="#L-315"><span class="linenos">315</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="L-316"><a href="#L-316"><span class="linenos">316</span></a>        <span class="n">spread</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">stacked</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</span><span id="L-317"><a href="#L-317"><span class="linenos">317</span></a>        <span class="n">diff</span> <span class="o">=</span> <span class="n">ensemble_mean</span> <span class="o">-</span> <span class="n">y_true_c</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span><span id="L-318"><a href="#L-318"><span class="linenos">318</span></a>        <span class="n">rmse_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">diff</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+</span><span id="L-319"><a href="#L-319"><span class="linenos">319</span></a>
+</span><span id="L-320"><a href="#L-320"><span class="linenos">320</span></a>    <span class="k">if</span> <span class="n">rmse_value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-321"><a href="#L-321"><span class="linenos">321</span></a>        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">spread</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+</span><span id="L-322"><a href="#L-322"><span class="linenos">322</span></a>
+</span><span id="L-323"><a href="#L-323"><span class="linenos">323</span></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">spread</span> <span class="o">/</span> <span class="n">rmse_value</span><span class="p">)</span>
+</span><span id="L-324"><a href="#L-324"><span class="linenos">324</span></a>
+</span><span id="L-325"><a href="#L-325"><span class="linenos">325</span></a>
+</span><span id="L-326"><a href="#L-326"><span class="linenos">326</span></a><span class="k">def</span><span class="w"> </span><span class="nf">crps_skill_score</span><span class="p">(</span>
+</span><span id="L-327"><a href="#L-327"><span class="linenos">327</span></a>    <span class="n">y_true</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-328"><a href="#L-328"><span class="linenos">328</span></a>    <span class="n">y_ensemble</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-329"><a href="#L-329"><span class="linenos">329</span></a>    <span class="n">y_reference_ensemble</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="L-330"><a href="#L-330"><span class="linenos">330</span></a>    <span class="n">data_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="L-331"><a href="#L-331"><span class="linenos">331</span></a>    <span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="L-332"><a href="#L-332"><span class="linenos">332</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="L-333"><a href="#L-333"><span class="linenos">333</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="L-334"><a href="#L-334"><span class="linenos">334</span></a><span class="sd">        Computes the CRPS skill score of an ensemble forecast relative to a</span>
+</span><span id="L-335"><a href="#L-335"><span class="linenos">335</span></a><span class="sd">        reference ensemble (e.g. climatology or a baseline model):</span>
+</span><span id="L-336"><a href="#L-336"><span class="linenos">336</span></a>
+</span><span id="L-337"><a href="#L-337"><span class="linenos">337</span></a><span class="sd">            CRPSS = 1 - CRPS(forecast) / CRPS(reference)</span>
+</span><span id="L-338"><a href="#L-338"><span class="linenos">338</span></a>
+</span><span id="L-339"><a href="#L-339"><span class="linenos">339</span></a><span class="sd">        Parameters:</span>
+</span><span id="L-340"><a href="#L-340"><span class="linenos">340</span></a><span class="sd">        -----------</span>
+</span><span id="L-341"><a href="#L-341"><span class="linenos">341</span></a><span class="sd">        - y_true : np.ndarray</span>
+</span><span id="L-342"><a href="#L-342"><span class="linenos">342</span></a><span class="sd">            Ground truth array, any of the 4 supported shapes (no ensemble axis).</span>
+</span><span id="L-343"><a href="#L-343"><span class="linenos">343</span></a><span class="sd">        - y_ensemble : np.ndarray</span>
+</span><span id="L-344"><a href="#L-344"><span class="linenos">344</span></a><span class="sd">            Forecast ensemble array of shape (n_members, *single_member_shape).</span>
+</span><span id="L-345"><a href="#L-345"><span class="linenos">345</span></a><span class="sd">        - y_reference_ensemble : np.ndarray</span>
+</span><span id="L-346"><a href="#L-346"><span class="linenos">346</span></a><span class="sd">            Reference/baseline ensemble array, same shape convention as y_ensemble.</span>
+</span><span id="L-347"><a href="#L-347"><span class="linenos">347</span></a><span class="sd">        - data_format : str</span>
+</span><span id="L-348"><a href="#L-348"><span class="linenos">348</span></a><span class="sd">            &quot;bhwc&quot; or &quot;hwct&quot;, required only when arrays are 4D.</span>
+</span><span id="L-349"><a href="#L-349"><span class="linenos">349</span></a><span class="sd">        - ignore_nan : bool</span>
+</span><span id="L-350"><a href="#L-350"><span class="linenos">350</span></a><span class="sd">            If True, non-finite values in y_true are replaced with the</span>
+</span><span id="L-351"><a href="#L-351"><span class="linenos">351</span></a><span class="sd">            finite median before scoring (default: False).</span>
+</span><span id="L-352"><a href="#L-352"><span class="linenos">352</span></a>
+</span><span id="L-353"><a href="#L-353"><span class="linenos">353</span></a><span class="sd">        Returns:</span>
+</span><span id="L-354"><a href="#L-354"><span class="linenos">354</span></a><span class="sd">        --------</span>
+</span><span id="L-355"><a href="#L-355"><span class="linenos">355</span></a><span class="sd">        - value : float</span>
+</span><span id="L-356"><a href="#L-356"><span class="linenos">356</span></a><span class="sd">            CRPS skill score. Positive values mean the forecast improves on</span>
+</span><span id="L-357"><a href="#L-357"><span class="linenos">357</span></a><span class="sd">            the reference; 0 means equal skill; negative means worse than</span>
+</span><span id="L-358"><a href="#L-358"><span class="linenos">358</span></a><span class="sd">            the reference.</span>
+</span><span id="L-359"><a href="#L-359"><span class="linenos">359</span></a>
+</span><span id="L-360"><a href="#L-360"><span class="linenos">360</span></a><span class="sd">        Usage:</span>
+</span><span id="L-361"><a href="#L-361"><span class="linenos">361</span></a><span class="sd">        ------</span>
+</span><span id="L-362"><a href="#L-362"><span class="linenos">362</span></a>
+</span><span id="L-363"><a href="#L-363"><span class="linenos">363</span></a><span class="sd">        ```python</span>
+</span><span id="L-364"><a href="#L-364"><span class="linenos">364</span></a><span class="sd">        import numpy as np</span>
+</span><span id="L-365"><a href="#L-365"><span class="linenos">365</span></a><span class="sd">        from aule.metrics import crps_skill_score</span>
+</span><span id="L-366"><a href="#L-366"><span class="linenos">366</span></a>
+</span><span id="L-367"><a href="#L-367"><span class="linenos">367</span></a><span class="sd">        gt        = np.random.rand(64, 64, 1)</span>
+</span><span id="L-368"><a href="#L-368"><span class="linenos">368</span></a><span class="sd">        forecast  = gt[np.newaxis] + np.random.normal(0, 0.05, (10, 64, 64, 1))</span>
+</span><span id="L-369"><a href="#L-369"><span class="linenos">369</span></a><span class="sd">        reference = gt[np.newaxis] + np.random.normal(0, 0.2, (10, 64, 64, 1))</span>
+</span><span id="L-370"><a href="#L-370"><span class="linenos">370</span></a><span class="sd">        score = crps_skill_score(gt, forecast, reference)</span>
+</span><span id="L-371"><a href="#L-371"><span class="linenos">371</span></a><span class="sd">        ```</span>
+</span><span id="L-372"><a href="#L-372"><span class="linenos">372</span></a><span class="sd">    &#39;&#39;&#39;</span>
+</span><span id="L-373"><a href="#L-373"><span class="linenos">373</span></a>
+</span><span id="L-374"><a href="#L-374"><span class="linenos">374</span></a>    <span class="n">forecast_crps</span> <span class="o">=</span> <span class="n">crps</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_ensemble</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">ignore_nan</span><span class="o">=</span><span class="n">ignore_nan</span><span class="p">)</span>
+</span><span id="L-375"><a href="#L-375"><span class="linenos">375</span></a>    <span class="n">reference_crps</span> <span class="o">=</span> <span class="n">crps</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_reference_ensemble</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">ignore_nan</span><span class="o">=</span><span class="n">ignore_nan</span><span class="p">)</span>
+</span><span id="L-376"><a href="#L-376"><span class="linenos">376</span></a>
+</span><span id="L-377"><a href="#L-377"><span class="linenos">377</span></a>    <span class="k">if</span> <span class="n">reference_crps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="L-378"><a href="#L-378"><span class="linenos">378</span></a>        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+</span><span id="L-379"><a href="#L-379"><span class="linenos">379</span></a>
+</span><span id="L-380"><a href="#L-380"><span class="linenos">380</span></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">forecast_crps</span> <span class="o">/</span> <span class="n">reference_crps</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -611,6 +802,355 @@ falling into each rank bin.</li>
 <span class="n">gt</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">ensemble</span> <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
 <span class="n">counts</span> <span class="o">=</span> <span class="n">rank_histogram</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">)</span>  <span class="c1"># length 11</span>
+</code></pre>
+</div>
+</div>
+
+
+                </section>
+                <section id="brier_score">
+                            <input id="brier_score-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">brier_score</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_ensemble</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+
+                <label class="view-source-button" for="brier_score-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#brier_score"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="brier_score-202"><a href="#brier_score-202"><span class="linenos">202</span></a><span class="k">def</span><span class="w"> </span><span class="nf">brier_score</span><span class="p">(</span>
+</span><span id="brier_score-203"><a href="#brier_score-203"><span class="linenos">203</span></a>    <span class="n">y_true</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="brier_score-204"><a href="#brier_score-204"><span class="linenos">204</span></a>    <span class="n">y_ensemble</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="brier_score-205"><a href="#brier_score-205"><span class="linenos">205</span></a>    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span id="brier_score-206"><a href="#brier_score-206"><span class="linenos">206</span></a>    <span class="n">data_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="brier_score-207"><a href="#brier_score-207"><span class="linenos">207</span></a>    <span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="brier_score-208"><a href="#brier_score-208"><span class="linenos">208</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="brier_score-209"><a href="#brier_score-209"><span class="linenos">209</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="brier_score-210"><a href="#brier_score-210"><span class="linenos">210</span></a><span class="sd">        Computes the Brier score for the binary event &quot;value exceeds</span>
+</span><span id="brier_score-211"><a href="#brier_score-211"><span class="linenos">211</span></a><span class="sd">        threshold&quot;, using the ensemble fraction exceeding the threshold as</span>
+</span><span id="brier_score-212"><a href="#brier_score-212"><span class="linenos">212</span></a><span class="sd">        the predicted probability. Standard verification metric for</span>
+</span><span id="brier_score-213"><a href="#brier_score-213"><span class="linenos">213</span></a><span class="sd">        probabilistic forecasts of binary events (e.g. probability of</span>
+</span><span id="brier_score-214"><a href="#brier_score-214"><span class="linenos">214</span></a><span class="sd">        exceeding a rainfall or temperature threshold).</span>
+</span><span id="brier_score-215"><a href="#brier_score-215"><span class="linenos">215</span></a>
+</span><span id="brier_score-216"><a href="#brier_score-216"><span class="linenos">216</span></a><span class="sd">        Parameters:</span>
+</span><span id="brier_score-217"><a href="#brier_score-217"><span class="linenos">217</span></a><span class="sd">        -----------</span>
+</span><span id="brier_score-218"><a href="#brier_score-218"><span class="linenos">218</span></a><span class="sd">        - y_true : np.ndarray</span>
+</span><span id="brier_score-219"><a href="#brier_score-219"><span class="linenos">219</span></a><span class="sd">            Ground truth array, any of the 4 supported shapes (no ensemble axis).</span>
+</span><span id="brier_score-220"><a href="#brier_score-220"><span class="linenos">220</span></a><span class="sd">        - y_ensemble : np.ndarray</span>
+</span><span id="brier_score-221"><a href="#brier_score-221"><span class="linenos">221</span></a><span class="sd">            Ensemble array of shape (n_members, *single_member_shape).</span>
+</span><span id="brier_score-222"><a href="#brier_score-222"><span class="linenos">222</span></a><span class="sd">        - threshold : float</span>
+</span><span id="brier_score-223"><a href="#brier_score-223"><span class="linenos">223</span></a><span class="sd">            Threshold defining the binary event (value &gt; threshold).</span>
+</span><span id="brier_score-224"><a href="#brier_score-224"><span class="linenos">224</span></a><span class="sd">        - data_format : str</span>
+</span><span id="brier_score-225"><a href="#brier_score-225"><span class="linenos">225</span></a><span class="sd">            &quot;bhwc&quot; or &quot;hwct&quot;, required only when arrays are 4D.</span>
+</span><span id="brier_score-226"><a href="#brier_score-226"><span class="linenos">226</span></a><span class="sd">        - ignore_nan : bool</span>
+</span><span id="brier_score-227"><a href="#brier_score-227"><span class="linenos">227</span></a><span class="sd">            If True, non-finite ground truth positions are excluded (default: False).</span>
+</span><span id="brier_score-228"><a href="#brier_score-228"><span class="linenos">228</span></a>
+</span><span id="brier_score-229"><a href="#brier_score-229"><span class="linenos">229</span></a><span class="sd">        Returns:</span>
+</span><span id="brier_score-230"><a href="#brier_score-230"><span class="linenos">230</span></a><span class="sd">        --------</span>
+</span><span id="brier_score-231"><a href="#brier_score-231"><span class="linenos">231</span></a><span class="sd">        - value : float</span>
+</span><span id="brier_score-232"><a href="#brier_score-232"><span class="linenos">232</span></a><span class="sd">            Brier score in [0, 1]. Lower is better (0 = perfect probabilistic forecast).</span>
+</span><span id="brier_score-233"><a href="#brier_score-233"><span class="linenos">233</span></a>
+</span><span id="brier_score-234"><a href="#brier_score-234"><span class="linenos">234</span></a><span class="sd">        Usage:</span>
+</span><span id="brier_score-235"><a href="#brier_score-235"><span class="linenos">235</span></a><span class="sd">        ------</span>
+</span><span id="brier_score-236"><a href="#brier_score-236"><span class="linenos">236</span></a>
+</span><span id="brier_score-237"><a href="#brier_score-237"><span class="linenos">237</span></a><span class="sd">        ```python</span>
+</span><span id="brier_score-238"><a href="#brier_score-238"><span class="linenos">238</span></a><span class="sd">        import numpy as np</span>
+</span><span id="brier_score-239"><a href="#brier_score-239"><span class="linenos">239</span></a><span class="sd">        from aule.metrics import brier_score</span>
+</span><span id="brier_score-240"><a href="#brier_score-240"><span class="linenos">240</span></a>
+</span><span id="brier_score-241"><a href="#brier_score-241"><span class="linenos">241</span></a><span class="sd">        gt       = np.random.rand(64, 64, 1)</span>
+</span><span id="brier_score-242"><a href="#brier_score-242"><span class="linenos">242</span></a><span class="sd">        ensemble = gt[np.newaxis] + np.random.normal(0, 0.1, (10, 64, 64, 1))</span>
+</span><span id="brier_score-243"><a href="#brier_score-243"><span class="linenos">243</span></a><span class="sd">        score = brier_score(gt, ensemble, threshold=0.7)</span>
+</span><span id="brier_score-244"><a href="#brier_score-244"><span class="linenos">244</span></a><span class="sd">        ```</span>
+</span><span id="brier_score-245"><a href="#brier_score-245"><span class="linenos">245</span></a><span class="sd">    &#39;&#39;&#39;</span>
+</span><span id="brier_score-246"><a href="#brier_score-246"><span class="linenos">246</span></a>
+</span><span id="brier_score-247"><a href="#brier_score-247"><span class="linenos">247</span></a>    <span class="n">y_true_c</span> <span class="o">=</span> <span class="n">to_canonical</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span>
+</span><span id="brier_score-248"><a href="#brier_score-248"><span class="linenos">248</span></a>    <span class="n">canonical_members</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_canonical</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">y_ensemble</span><span class="p">]</span>
+</span><span id="brier_score-249"><a href="#brier_score-249"><span class="linenos">249</span></a>    <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">canonical_members</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># (M, B, H, W, C, T)</span>
+</span><span id="brier_score-250"><a href="#brier_score-250"><span class="linenos">250</span></a>
+</span><span id="brier_score-251"><a href="#brier_score-251"><span class="linenos">251</span></a>    <span class="n">observed</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_true_c</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span><span id="brier_score-252"><a href="#brier_score-252"><span class="linenos">252</span></a>    <span class="n">forecast_prob</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">stacked</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="brier_score-253"><a href="#brier_score-253"><span class="linenos">253</span></a>
+</span><span id="brier_score-254"><a href="#brier_score-254"><span class="linenos">254</span></a>    <span class="n">sq_error</span> <span class="o">=</span> <span class="p">(</span><span class="n">forecast_prob</span> <span class="o">-</span> <span class="n">observed</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+</span><span id="brier_score-255"><a href="#brier_score-255"><span class="linenos">255</span></a>
+</span><span id="brier_score-256"><a href="#brier_score-256"><span class="linenos">256</span></a>    <span class="k">if</span> <span class="n">ignore_nan</span><span class="p">:</span>
+</span><span id="brier_score-257"><a href="#brier_score-257"><span class="linenos">257</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">observed</span><span class="p">)</span>
+</span><span id="brier_score-258"><a href="#brier_score-258"><span class="linenos">258</span></a>        <span class="n">sq_error</span> <span class="o">=</span> <span class="n">sq_error</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+</span><span id="brier_score-259"><a href="#brier_score-259"><span class="linenos">259</span></a>
+</span><span id="brier_score-260"><a href="#brier_score-260"><span class="linenos">260</span></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sq_error</span><span class="p">))</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Computes the Brier score for the binary event "value exceeds
+threshold", using the ensemble fraction exceeding the threshold as
+the predicted probability. Standard verification metric for
+probabilistic forecasts of binary events (e.g. probability of
+exceeding a rainfall or temperature threshold).</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>y_true : np.ndarray
+Ground truth array, any of the 4 supported shapes (no ensemble axis).</li>
+<li>y_ensemble : np.ndarray
+Ensemble array of shape (n_members, *single_member_shape).</li>
+<li>threshold : float
+Threshold defining the binary event (value &gt; threshold).</li>
+<li>data_format : str
+"bhwc" or "hwct", required only when arrays are 4D.</li>
+<li>ignore_nan : bool
+If True, non-finite ground truth positions are excluded (default: False).</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>value : float
+Brier score in [0, 1]. Lower is better (0 = perfect probabilistic forecast).</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="../metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">brier_score</span>
+
+<span class="n">gt</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">brier_score</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+
+
+                </section>
+                <section id="spread_skill_ratio">
+                            <input id="spread_skill_ratio-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">spread_skill_ratio</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_ensemble</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+
+                <label class="view-source-button" for="spread_skill_ratio-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#spread_skill_ratio"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="spread_skill_ratio-263"><a href="#spread_skill_ratio-263"><span class="linenos">263</span></a><span class="k">def</span><span class="w"> </span><span class="nf">spread_skill_ratio</span><span class="p">(</span>
+</span><span id="spread_skill_ratio-264"><a href="#spread_skill_ratio-264"><span class="linenos">264</span></a>    <span class="n">y_true</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="spread_skill_ratio-265"><a href="#spread_skill_ratio-265"><span class="linenos">265</span></a>    <span class="n">y_ensemble</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="spread_skill_ratio-266"><a href="#spread_skill_ratio-266"><span class="linenos">266</span></a>    <span class="n">data_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="spread_skill_ratio-267"><a href="#spread_skill_ratio-267"><span class="linenos">267</span></a>    <span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="spread_skill_ratio-268"><a href="#spread_skill_ratio-268"><span class="linenos">268</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="spread_skill_ratio-269"><a href="#spread_skill_ratio-269"><span class="linenos">269</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="spread_skill_ratio-270"><a href="#spread_skill_ratio-270"><span class="linenos">270</span></a><span class="sd">        Computes the ratio between the ensemble spread (mean standard</span>
+</span><span id="spread_skill_ratio-271"><a href="#spread_skill_ratio-271"><span class="linenos">271</span></a><span class="sd">        deviation across members) and the RMSE of the ensemble mean against</span>
+</span><span id="spread_skill_ratio-272"><a href="#spread_skill_ratio-272"><span class="linenos">272</span></a><span class="sd">        the ground truth. A well-calibrated ensemble has a ratio close to 1:</span>
+</span><span id="spread_skill_ratio-273"><a href="#spread_skill_ratio-273"><span class="linenos">273</span></a><span class="sd">        values below 1 indicate under-dispersion (overconfident ensemble),</span>
+</span><span id="spread_skill_ratio-274"><a href="#spread_skill_ratio-274"><span class="linenos">274</span></a><span class="sd">        values above 1 indicate over-dispersion.</span>
+</span><span id="spread_skill_ratio-275"><a href="#spread_skill_ratio-275"><span class="linenos">275</span></a>
+</span><span id="spread_skill_ratio-276"><a href="#spread_skill_ratio-276"><span class="linenos">276</span></a><span class="sd">        Parameters:</span>
+</span><span id="spread_skill_ratio-277"><a href="#spread_skill_ratio-277"><span class="linenos">277</span></a><span class="sd">        -----------</span>
+</span><span id="spread_skill_ratio-278"><a href="#spread_skill_ratio-278"><span class="linenos">278</span></a><span class="sd">        - y_true : np.ndarray</span>
+</span><span id="spread_skill_ratio-279"><a href="#spread_skill_ratio-279"><span class="linenos">279</span></a><span class="sd">            Ground truth array, any of the 4 supported shapes (no ensemble axis).</span>
+</span><span id="spread_skill_ratio-280"><a href="#spread_skill_ratio-280"><span class="linenos">280</span></a><span class="sd">        - y_ensemble : np.ndarray</span>
+</span><span id="spread_skill_ratio-281"><a href="#spread_skill_ratio-281"><span class="linenos">281</span></a><span class="sd">            Ensemble array of shape (n_members, *single_member_shape).</span>
+</span><span id="spread_skill_ratio-282"><a href="#spread_skill_ratio-282"><span class="linenos">282</span></a><span class="sd">        - data_format : str</span>
+</span><span id="spread_skill_ratio-283"><a href="#spread_skill_ratio-283"><span class="linenos">283</span></a><span class="sd">            &quot;bhwc&quot; or &quot;hwct&quot;, required only when arrays are 4D.</span>
+</span><span id="spread_skill_ratio-284"><a href="#spread_skill_ratio-284"><span class="linenos">284</span></a><span class="sd">        - ignore_nan : bool</span>
+</span><span id="spread_skill_ratio-285"><a href="#spread_skill_ratio-285"><span class="linenos">285</span></a><span class="sd">            If True, non-finite values are excluded from both terms (default: False).</span>
+</span><span id="spread_skill_ratio-286"><a href="#spread_skill_ratio-286"><span class="linenos">286</span></a>
+</span><span id="spread_skill_ratio-287"><a href="#spread_skill_ratio-287"><span class="linenos">287</span></a><span class="sd">        Returns:</span>
+</span><span id="spread_skill_ratio-288"><a href="#spread_skill_ratio-288"><span class="linenos">288</span></a><span class="sd">        --------</span>
+</span><span id="spread_skill_ratio-289"><a href="#spread_skill_ratio-289"><span class="linenos">289</span></a><span class="sd">        - value : float</span>
+</span><span id="spread_skill_ratio-290"><a href="#spread_skill_ratio-290"><span class="linenos">290</span></a><span class="sd">            Spread/skill ratio. 1.0 indicates good calibration.</span>
+</span><span id="spread_skill_ratio-291"><a href="#spread_skill_ratio-291"><span class="linenos">291</span></a>
+</span><span id="spread_skill_ratio-292"><a href="#spread_skill_ratio-292"><span class="linenos">292</span></a><span class="sd">        Usage:</span>
+</span><span id="spread_skill_ratio-293"><a href="#spread_skill_ratio-293"><span class="linenos">293</span></a><span class="sd">        ------</span>
+</span><span id="spread_skill_ratio-294"><a href="#spread_skill_ratio-294"><span class="linenos">294</span></a>
+</span><span id="spread_skill_ratio-295"><a href="#spread_skill_ratio-295"><span class="linenos">295</span></a><span class="sd">        ```python</span>
+</span><span id="spread_skill_ratio-296"><a href="#spread_skill_ratio-296"><span class="linenos">296</span></a><span class="sd">        import numpy as np</span>
+</span><span id="spread_skill_ratio-297"><a href="#spread_skill_ratio-297"><span class="linenos">297</span></a><span class="sd">        from aule.metrics import spread_skill_ratio</span>
+</span><span id="spread_skill_ratio-298"><a href="#spread_skill_ratio-298"><span class="linenos">298</span></a>
+</span><span id="spread_skill_ratio-299"><a href="#spread_skill_ratio-299"><span class="linenos">299</span></a><span class="sd">        gt       = np.random.rand(64, 64, 1)</span>
+</span><span id="spread_skill_ratio-300"><a href="#spread_skill_ratio-300"><span class="linenos">300</span></a><span class="sd">        ensemble = gt[np.newaxis] + np.random.normal(0, 0.1, (10, 64, 64, 1))</span>
+</span><span id="spread_skill_ratio-301"><a href="#spread_skill_ratio-301"><span class="linenos">301</span></a><span class="sd">        ratio = spread_skill_ratio(gt, ensemble)</span>
+</span><span id="spread_skill_ratio-302"><a href="#spread_skill_ratio-302"><span class="linenos">302</span></a><span class="sd">        ```</span>
+</span><span id="spread_skill_ratio-303"><a href="#spread_skill_ratio-303"><span class="linenos">303</span></a><span class="sd">    &#39;&#39;&#39;</span>
+</span><span id="spread_skill_ratio-304"><a href="#spread_skill_ratio-304"><span class="linenos">304</span></a>
+</span><span id="spread_skill_ratio-305"><a href="#spread_skill_ratio-305"><span class="linenos">305</span></a>    <span class="n">y_true_c</span> <span class="o">=</span> <span class="n">to_canonical</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span>
+</span><span id="spread_skill_ratio-306"><a href="#spread_skill_ratio-306"><span class="linenos">306</span></a>    <span class="n">canonical_members</span> <span class="o">=</span> <span class="p">[</span><span class="n">to_canonical</span><span class="p">(</span><span class="n">member</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">)</span> <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">y_ensemble</span><span class="p">]</span>
+</span><span id="spread_skill_ratio-307"><a href="#spread_skill_ratio-307"><span class="linenos">307</span></a>    <span class="n">stacked</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">canonical_members</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>  <span class="c1"># (M, B, H, W, C, T)</span>
+</span><span id="spread_skill_ratio-308"><a href="#spread_skill_ratio-308"><span class="linenos">308</span></a>
+</span><span id="spread_skill_ratio-309"><a href="#spread_skill_ratio-309"><span class="linenos">309</span></a>    <span class="n">ensemble_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">stacked</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</span><span id="spread_skill_ratio-310"><a href="#spread_skill_ratio-310"><span class="linenos">310</span></a>
+</span><span id="spread_skill_ratio-311"><a href="#spread_skill_ratio-311"><span class="linenos">311</span></a>    <span class="k">if</span> <span class="n">ignore_nan</span><span class="p">:</span>
+</span><span id="spread_skill_ratio-312"><a href="#spread_skill_ratio-312"><span class="linenos">312</span></a>        <span class="n">spread</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nanstd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">stacked</span><span class="p">),</span> <span class="n">stacked</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</span><span id="spread_skill_ratio-313"><a href="#spread_skill_ratio-313"><span class="linenos">313</span></a>        <span class="n">diff</span> <span class="o">=</span> <span class="n">ensemble_mean</span> <span class="o">-</span> <span class="n">y_true_c</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span><span id="spread_skill_ratio-314"><a href="#spread_skill_ratio-314"><span class="linenos">314</span></a>        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+</span><span id="spread_skill_ratio-315"><a href="#spread_skill_ratio-315"><span class="linenos">315</span></a>        <span class="n">rmse_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">diff</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+</span><span id="spread_skill_ratio-316"><a href="#spread_skill_ratio-316"><span class="linenos">316</span></a>    <span class="k">else</span><span class="p">:</span>
+</span><span id="spread_skill_ratio-317"><a href="#spread_skill_ratio-317"><span class="linenos">317</span></a>        <span class="n">spread</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">stacked</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+</span><span id="spread_skill_ratio-318"><a href="#spread_skill_ratio-318"><span class="linenos">318</span></a>        <span class="n">diff</span> <span class="o">=</span> <span class="n">ensemble_mean</span> <span class="o">-</span> <span class="n">y_true_c</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+</span><span id="spread_skill_ratio-319"><a href="#spread_skill_ratio-319"><span class="linenos">319</span></a>        <span class="n">rmse_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">diff</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)))</span>
+</span><span id="spread_skill_ratio-320"><a href="#spread_skill_ratio-320"><span class="linenos">320</span></a>
+</span><span id="spread_skill_ratio-321"><a href="#spread_skill_ratio-321"><span class="linenos">321</span></a>    <span class="k">if</span> <span class="n">rmse_value</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="spread_skill_ratio-322"><a href="#spread_skill_ratio-322"><span class="linenos">322</span></a>        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">spread</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+</span><span id="spread_skill_ratio-323"><a href="#spread_skill_ratio-323"><span class="linenos">323</span></a>
+</span><span id="spread_skill_ratio-324"><a href="#spread_skill_ratio-324"><span class="linenos">324</span></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">spread</span> <span class="o">/</span> <span class="n">rmse_value</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Computes the ratio between the ensemble spread (mean standard
+deviation across members) and the RMSE of the ensemble mean against
+the ground truth. A well-calibrated ensemble has a ratio close to 1:
+values below 1 indicate under-dispersion (overconfident ensemble),
+values above 1 indicate over-dispersion.</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>y_true : np.ndarray
+Ground truth array, any of the 4 supported shapes (no ensemble axis).</li>
+<li>y_ensemble : np.ndarray
+Ensemble array of shape (n_members, *single_member_shape).</li>
+<li>data_format : str
+"bhwc" or "hwct", required only when arrays are 4D.</li>
+<li>ignore_nan : bool
+If True, non-finite values are excluded from both terms (default: False).</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>value : float
+Spread/skill ratio. 1.0 indicates good calibration.</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="../metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">spread_skill_ratio</span>
+
+<span class="n">gt</span>       <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ensemble</span> <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">spread_skill_ratio</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">ensemble</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+
+
+                </section>
+                <section id="crps_skill_score">
+                            <input id="crps_skill_score-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">crps_skill_score</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_ensemble</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_reference_ensemble</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+
+                <label class="view-source-button" for="crps_skill_score-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#crps_skill_score"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="crps_skill_score-327"><a href="#crps_skill_score-327"><span class="linenos">327</span></a><span class="k">def</span><span class="w"> </span><span class="nf">crps_skill_score</span><span class="p">(</span>
+</span><span id="crps_skill_score-328"><a href="#crps_skill_score-328"><span class="linenos">328</span></a>    <span class="n">y_true</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="crps_skill_score-329"><a href="#crps_skill_score-329"><span class="linenos">329</span></a>    <span class="n">y_ensemble</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="crps_skill_score-330"><a href="#crps_skill_score-330"><span class="linenos">330</span></a>    <span class="n">y_reference_ensemble</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+</span><span id="crps_skill_score-331"><a href="#crps_skill_score-331"><span class="linenos">331</span></a>    <span class="n">data_format</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="crps_skill_score-332"><a href="#crps_skill_score-332"><span class="linenos">332</span></a>    <span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="crps_skill_score-333"><a href="#crps_skill_score-333"><span class="linenos">333</span></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+</span><span id="crps_skill_score-334"><a href="#crps_skill_score-334"><span class="linenos">334</span></a><span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+</span><span id="crps_skill_score-335"><a href="#crps_skill_score-335"><span class="linenos">335</span></a><span class="sd">        Computes the CRPS skill score of an ensemble forecast relative to a</span>
+</span><span id="crps_skill_score-336"><a href="#crps_skill_score-336"><span class="linenos">336</span></a><span class="sd">        reference ensemble (e.g. climatology or a baseline model):</span>
+</span><span id="crps_skill_score-337"><a href="#crps_skill_score-337"><span class="linenos">337</span></a>
+</span><span id="crps_skill_score-338"><a href="#crps_skill_score-338"><span class="linenos">338</span></a><span class="sd">            CRPSS = 1 - CRPS(forecast) / CRPS(reference)</span>
+</span><span id="crps_skill_score-339"><a href="#crps_skill_score-339"><span class="linenos">339</span></a>
+</span><span id="crps_skill_score-340"><a href="#crps_skill_score-340"><span class="linenos">340</span></a><span class="sd">        Parameters:</span>
+</span><span id="crps_skill_score-341"><a href="#crps_skill_score-341"><span class="linenos">341</span></a><span class="sd">        -----------</span>
+</span><span id="crps_skill_score-342"><a href="#crps_skill_score-342"><span class="linenos">342</span></a><span class="sd">        - y_true : np.ndarray</span>
+</span><span id="crps_skill_score-343"><a href="#crps_skill_score-343"><span class="linenos">343</span></a><span class="sd">            Ground truth array, any of the 4 supported shapes (no ensemble axis).</span>
+</span><span id="crps_skill_score-344"><a href="#crps_skill_score-344"><span class="linenos">344</span></a><span class="sd">        - y_ensemble : np.ndarray</span>
+</span><span id="crps_skill_score-345"><a href="#crps_skill_score-345"><span class="linenos">345</span></a><span class="sd">            Forecast ensemble array of shape (n_members, *single_member_shape).</span>
+</span><span id="crps_skill_score-346"><a href="#crps_skill_score-346"><span class="linenos">346</span></a><span class="sd">        - y_reference_ensemble : np.ndarray</span>
+</span><span id="crps_skill_score-347"><a href="#crps_skill_score-347"><span class="linenos">347</span></a><span class="sd">            Reference/baseline ensemble array, same shape convention as y_ensemble.</span>
+</span><span id="crps_skill_score-348"><a href="#crps_skill_score-348"><span class="linenos">348</span></a><span class="sd">        - data_format : str</span>
+</span><span id="crps_skill_score-349"><a href="#crps_skill_score-349"><span class="linenos">349</span></a><span class="sd">            &quot;bhwc&quot; or &quot;hwct&quot;, required only when arrays are 4D.</span>
+</span><span id="crps_skill_score-350"><a href="#crps_skill_score-350"><span class="linenos">350</span></a><span class="sd">        - ignore_nan : bool</span>
+</span><span id="crps_skill_score-351"><a href="#crps_skill_score-351"><span class="linenos">351</span></a><span class="sd">            If True, non-finite values in y_true are replaced with the</span>
+</span><span id="crps_skill_score-352"><a href="#crps_skill_score-352"><span class="linenos">352</span></a><span class="sd">            finite median before scoring (default: False).</span>
+</span><span id="crps_skill_score-353"><a href="#crps_skill_score-353"><span class="linenos">353</span></a>
+</span><span id="crps_skill_score-354"><a href="#crps_skill_score-354"><span class="linenos">354</span></a><span class="sd">        Returns:</span>
+</span><span id="crps_skill_score-355"><a href="#crps_skill_score-355"><span class="linenos">355</span></a><span class="sd">        --------</span>
+</span><span id="crps_skill_score-356"><a href="#crps_skill_score-356"><span class="linenos">356</span></a><span class="sd">        - value : float</span>
+</span><span id="crps_skill_score-357"><a href="#crps_skill_score-357"><span class="linenos">357</span></a><span class="sd">            CRPS skill score. Positive values mean the forecast improves on</span>
+</span><span id="crps_skill_score-358"><a href="#crps_skill_score-358"><span class="linenos">358</span></a><span class="sd">            the reference; 0 means equal skill; negative means worse than</span>
+</span><span id="crps_skill_score-359"><a href="#crps_skill_score-359"><span class="linenos">359</span></a><span class="sd">            the reference.</span>
+</span><span id="crps_skill_score-360"><a href="#crps_skill_score-360"><span class="linenos">360</span></a>
+</span><span id="crps_skill_score-361"><a href="#crps_skill_score-361"><span class="linenos">361</span></a><span class="sd">        Usage:</span>
+</span><span id="crps_skill_score-362"><a href="#crps_skill_score-362"><span class="linenos">362</span></a><span class="sd">        ------</span>
+</span><span id="crps_skill_score-363"><a href="#crps_skill_score-363"><span class="linenos">363</span></a>
+</span><span id="crps_skill_score-364"><a href="#crps_skill_score-364"><span class="linenos">364</span></a><span class="sd">        ```python</span>
+</span><span id="crps_skill_score-365"><a href="#crps_skill_score-365"><span class="linenos">365</span></a><span class="sd">        import numpy as np</span>
+</span><span id="crps_skill_score-366"><a href="#crps_skill_score-366"><span class="linenos">366</span></a><span class="sd">        from aule.metrics import crps_skill_score</span>
+</span><span id="crps_skill_score-367"><a href="#crps_skill_score-367"><span class="linenos">367</span></a>
+</span><span id="crps_skill_score-368"><a href="#crps_skill_score-368"><span class="linenos">368</span></a><span class="sd">        gt        = np.random.rand(64, 64, 1)</span>
+</span><span id="crps_skill_score-369"><a href="#crps_skill_score-369"><span class="linenos">369</span></a><span class="sd">        forecast  = gt[np.newaxis] + np.random.normal(0, 0.05, (10, 64, 64, 1))</span>
+</span><span id="crps_skill_score-370"><a href="#crps_skill_score-370"><span class="linenos">370</span></a><span class="sd">        reference = gt[np.newaxis] + np.random.normal(0, 0.2, (10, 64, 64, 1))</span>
+</span><span id="crps_skill_score-371"><a href="#crps_skill_score-371"><span class="linenos">371</span></a><span class="sd">        score = crps_skill_score(gt, forecast, reference)</span>
+</span><span id="crps_skill_score-372"><a href="#crps_skill_score-372"><span class="linenos">372</span></a><span class="sd">        ```</span>
+</span><span id="crps_skill_score-373"><a href="#crps_skill_score-373"><span class="linenos">373</span></a><span class="sd">    &#39;&#39;&#39;</span>
+</span><span id="crps_skill_score-374"><a href="#crps_skill_score-374"><span class="linenos">374</span></a>
+</span><span id="crps_skill_score-375"><a href="#crps_skill_score-375"><span class="linenos">375</span></a>    <span class="n">forecast_crps</span> <span class="o">=</span> <span class="n">crps</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_ensemble</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">ignore_nan</span><span class="o">=</span><span class="n">ignore_nan</span><span class="p">)</span>
+</span><span id="crps_skill_score-376"><a href="#crps_skill_score-376"><span class="linenos">376</span></a>    <span class="n">reference_crps</span> <span class="o">=</span> <span class="n">crps</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_reference_ensemble</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="n">data_format</span><span class="p">,</span> <span class="n">ignore_nan</span><span class="o">=</span><span class="n">ignore_nan</span><span class="p">)</span>
+</span><span id="crps_skill_score-377"><a href="#crps_skill_score-377"><span class="linenos">377</span></a>
+</span><span id="crps_skill_score-378"><a href="#crps_skill_score-378"><span class="linenos">378</span></a>    <span class="k">if</span> <span class="n">reference_crps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="crps_skill_score-379"><a href="#crps_skill_score-379"><span class="linenos">379</span></a>        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="s2">&quot;nan&quot;</span><span class="p">)</span>
+</span><span id="crps_skill_score-380"><a href="#crps_skill_score-380"><span class="linenos">380</span></a>
+</span><span id="crps_skill_score-381"><a href="#crps_skill_score-381"><span class="linenos">381</span></a>    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">forecast_crps</span> <span class="o">/</span> <span class="n">reference_crps</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Computes the CRPS skill score of an ensemble forecast relative to a
+reference ensemble (e.g. climatology or a baseline model):</p>
+
+<pre><code>CRPSS = 1 - CRPS(forecast) / CRPS(reference)
+</code></pre>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>y_true : np.ndarray
+Ground truth array, any of the 4 supported shapes (no ensemble axis).</li>
+<li>y_ensemble : np.ndarray
+Forecast ensemble array of shape (n_members, *single_member_shape).</li>
+<li>y_reference_ensemble : np.ndarray
+Reference/baseline ensemble array, same shape convention as y_ensemble.</li>
+<li>data_format : str
+"bhwc" or "hwct", required only when arrays are 4D.</li>
+<li>ignore_nan : bool
+If True, non-finite values in y_true are replaced with the
+finite median before scoring (default: False).</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>value : float
+CRPS skill score. Positive values mean the forecast improves on
+the reference; 0 means equal skill; negative means worse than
+the reference.</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="../metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">crps_skill_score</span>
+
+<span class="n">gt</span>        <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">forecast</span>  <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">reference</span> <span class="o">=</span> <span class="n">gt</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">crps_skill_score</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">forecast</span><span class="p">,</span> <span class="n">reference</span><span class="p">)</span>
 </code></pre>
 </div>
 </div>
