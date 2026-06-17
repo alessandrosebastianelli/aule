@@ -6,3 +6,5 @@ from .core import *
 from .spatial import *
 from .climate import *
 from .ensemble import *
+from .diagnostics import *
+from .classification import *
