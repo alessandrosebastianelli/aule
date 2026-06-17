@@ -45,6 +45,22 @@ fig, axes = plot_field_comparison(gt, pred)
 fig, ax = plot_scatter(gt, pred, save_path="scatter.png")
 ```
 
+## Object-oriented usage
+
+Every metric and plot is also available as a method on the `aule` class,
+which binds `y_true`/`y_pred` (and optionally `data_format`/`ignore_nan`)
+once. New functions added to `aule.metrics` or `aule.plots` are picked up
+automatically, no extra wiring needed.
+
+```python
+from aule import aule
+
+v = aule(gt, pred)
+print(v.rmse())
+print(v.pearson_r())
+fig, ax = v.plot_scatter(save_path="scatter.png")
+```
+
 ## Documentation
 
 The documentation is produced using [pdoc](https://pdoc.dev).
