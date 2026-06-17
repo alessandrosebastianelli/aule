@@ -8,6 +8,7 @@ from aule.metrics import (
     spectral_error, gradient_error, psd_radial_error, spectral_angle_mapper,
     seasonal_error, percentile_error, pixelwise_temporal_correlation,
     trend_error, extreme_event_duration_error, autocorrelation_error,
+    wet_day_frequency_error, dry_spell_error, anomaly_correlation_coefficient,
     ensemble_spread, crps, rank_histogram, brier_score, spread_skill_ratio, crps_skill_score,
     normalized_difference_index, index_error, change_detection_error,
 )
@@ -168,6 +169,37 @@ def test_crps_skill_score_positive_when_forecast_better():
     bad_reference = gt[np.newaxis] + np.random.normal(0, 0.3, (10, 16, 16, 1))
     score = crps_skill_score(gt, good_forecast, bad_reference)
     assert score > 0.0
+
+
+def test_wet_day_frequency_error_zero_for_identical():
+    x = np.random.exponential(1.0, (16, 16, 1, 30))
+    assert wet_day_frequency_error(x, x, threshold=1.0, data_format="hwct") == pytest.approx(0.0, abs=1e-10)
+
+
+def test_wet_day_frequency_error_bounded():
+    gt = np.random.exponential(1.0, (16, 16, 1, 30))
+    pred = np.random.exponential(2.0, (16, 16, 1, 30))
+    score = wet_day_frequency_error(gt, pred, threshold=1.0, data_format="hwct")
+    assert 0.0 <= score <= 1.0
+
+
+def test_dry_spell_error_zero_for_identical():
+    x = np.random.exponential(1.0, (16, 16, 1, 30))
+    assert dry_spell_error(x, x, threshold=1.0, data_format="hwct") == pytest.approx(0.0, abs=1e-10)
+
+
+def test_anomaly_correlation_coefficient_perfect_for_identical():
+    clim = np.random.rand(1, 16, 16, 1, 1)
+    gt = clim + np.random.normal(0, 0.2, (5, 16, 16, 1, 1))
+    assert anomaly_correlation_coefficient(gt, gt, clim) == pytest.approx(1.0, abs=1e-6)
+
+
+def test_anomaly_correlation_coefficient_in_valid_range():
+    clim = np.random.rand(1, 16, 16, 1, 1)
+    gt = clim + np.random.normal(0, 0.2, (5, 16, 16, 1, 1))
+    pred = clim + np.random.normal(0, 0.2, (5, 16, 16, 1, 1))
+    score = anomaly_correlation_coefficient(gt, pred, clim)
+    assert -1.0 <= score <= 1.0
 
 
 if __name__ == '__main__':

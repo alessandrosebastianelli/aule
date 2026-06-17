@@ -16,6 +16,7 @@ from aule.plots import (
     plot_taylor_diagram, plot_boxplot_comparison, plot_violin_comparison,
     plot_time_series, plot_error_map,
     plot_confusion_matrix, plot_reliability_diagram,
+    plot_hovmoller, plot_cdf_comparison, plot_spectral_density, plot_time_evolution,
 )
 from aule.metrics import pixelwise_temporal_correlation, rank_histogram
 
@@ -228,6 +229,55 @@ def test_plot_reliability_diagram(out_dir):
     ensemble = gt[np.newaxis] + np.random.normal(0, 0.1, (10, 32, 32, 1))
     fig, ax = plot_reliability_diagram(gt, ensemble, threshold=0.6, save_path=os.path.join(out_dir, "reliability.png"))
     assert isinstance(fig, plt.Figure)
+    plt.close(fig)
+
+
+def test_plot_hovmoller(out_dir):
+    H, W, T = 16, 16, 20
+    data = np.random.rand(H, W, 1, T)
+    fig, ax = plot_hovmoller(data, axis="lat", data_format="hwct", save_path=os.path.join(out_dir, "hovmoller.png"))
+    assert isinstance(fig, plt.Figure)
+    plt.close(fig)
+
+
+def test_plot_hovmoller_lon_axis(out_dir):
+    H, W, T = 16, 16, 20
+    data = np.random.rand(H, W, 1, T)
+    fig, ax = plot_hovmoller(data, axis="lon", data_format="hwct")
+    assert isinstance(fig, plt.Figure)
+    plt.close(fig)
+
+
+def test_plot_cdf_comparison(out_dir):
+    gt = np.random.exponential(1.0, (8, 32, 32, 1))
+    pred = gt * 1.1
+    fig, ax = plot_cdf_comparison(gt, pred, save_path=os.path.join(out_dir, "cdf.png"))
+    assert isinstance(fig, plt.Figure)
+    plt.close(fig)
+
+
+def test_plot_spectral_density(out_dir):
+    gt = np.random.rand(32, 32, 1)
+    pred = gt + np.random.normal(0, 0.05, gt.shape)
+    fig, ax = plot_spectral_density(gt, pred, save_path=os.path.join(out_dir, "spectral_density.png"))
+    assert isinstance(fig, plt.Figure)
+    plt.close(fig)
+
+
+def test_plot_time_evolution(out_dir):
+    gt = np.random.rand(16, 16, 1, 15)
+    pred = gt + np.random.normal(0, 0.1, gt.shape)
+    fig, axes = plot_time_evolution(gt, pred, data_format="hwct", save_path=os.path.join(out_dir, "evolution.png"))
+    assert isinstance(fig, plt.Figure)
+    assert axes.shape[0] == 2
+    plt.close(fig)
+
+
+def test_plot_time_evolution_custom_indices(out_dir):
+    gt = np.random.rand(16, 16, 1, 15)
+    pred = gt + np.random.normal(0, 0.1, gt.shape)
+    fig, axes = plot_time_evolution(gt, pred, time_indices=(0, 7, 14), data_format="hwct")
+    assert axes.shape == (2, 3)
     plt.close(fig)
 
 

@@ -4,7 +4,10 @@ sys.path += ['.']
 import numpy as np
 import pytest
 
-from aule.metrics import rmse, mae, bias, pearson_r, ssim, mse, psnr, r2_score, mape, smape, nse, kge, max_error, explained_variance
+from aule.metrics import (
+    rmse, mae, bias, pearson_r, ssim, mse, psnr, r2_score, mape, smape, nse, kge,
+    max_error, explained_variance, wasserstein_distance, quantile_mapping_bias,
+)
 
 
 def test_rmse_zero_for_identical_arrays():
@@ -122,6 +125,29 @@ def test_max_error_at_least_mae():
 def test_explained_variance_perfect_for_identical_arrays():
     x = np.random.rand(8, 32, 32, 1)
     assert explained_variance(x, x) == pytest.approx(1.0, abs=1e-10)
+
+
+def test_wasserstein_distance_zero_for_identical_arrays():
+    x = np.random.rand(8, 32, 32, 1)
+    assert wasserstein_distance(x, x) == pytest.approx(0.0, abs=1e-10)
+
+
+def test_wasserstein_distance_nonnegative():
+    gt = np.random.exponential(1.0, (8, 32, 32, 1))
+    pred = np.random.exponential(1.5, (8, 32, 32, 1))
+    assert wasserstein_distance(gt, pred) >= 0.0
+
+
+def test_quantile_mapping_bias_zero_for_identical_arrays():
+    x = np.random.rand(8, 32, 32, 1)
+    assert quantile_mapping_bias(x, x) == pytest.approx(0.0, abs=1e-10)
+
+
+def test_quantile_mapping_bias_detects_scale_shift():
+    gt = np.random.exponential(1.0, (8, 32, 32, 1))
+    pred = gt * 1.5
+    score = quantile_mapping_bias(gt, pred)
+    assert score > 0.0
 
 
 if __name__ == '__main__':
