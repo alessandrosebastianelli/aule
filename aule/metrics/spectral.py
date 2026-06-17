@@ -11,7 +11,7 @@ import numpy as np
 
 from .._shapes import match_shapes, apply_nan_mask
 
-__all__ = ["spectral_error", "gradient_error"]
+__all__ = ["spectral_error", "gradient_error", "psd_radial_error", "spectral_angle_mapper"]
 
 
 def spectral_error(
@@ -181,3 +181,171 @@ def gradient_error(
                 errors.append(err)
 
     return float(np.mean(errors))
+
+
+def _radial_average(psd_2d: np.ndarray) -> np.ndarray:
+    '''
+        Computes the radially-averaged profile of a 2D power spectrum,
+        binning frequencies by their integer distance from the zero-frequency
+        corner.
+
+        Parameters:
+        -----------
+        - psd_2d : np.ndarray
+            2D power spectrum (H, W_half), as returned by rfft2 magnitude.
+
+        Returns:
+        --------
+        - profile : np.ndarray
+            1D array, the mean power at each radial frequency bin.
+    '''
+
+    H, W = psd_2d.shape
+    y, x = np.indices((H, W))
+    # distance from the (0, 0) frequency corner, which is where rfft2 places DC
+    r = np.sqrt(x.astype(np.float64) ** 2 + y.astype(np.float64) ** 2)
+    r_int = r.astype(np.int64)
+
+    max_r = r_int.max()
+    profile = np.zeros(max_r + 1, dtype=np.float64)
+    counts = np.zeros(max_r + 1, dtype=np.float64)
+
+    flat_r = r_int.ravel()
+    flat_psd = psd_2d.ravel()
+
+    np.add.at(profile, flat_r, flat_psd)
+    np.add.at(counts, flat_r, 1.0)
+
+    counts[counts == 0] = 1.0
+
+    return profile / counts
+
+
+def psd_radial_error(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the L1 error between the radially-averaged power spectral
+        density (PSD) of ground truth and prediction, averaged over batch,
+        channel and time. More robust than the raw 2D `spectral_error` since
+        it summarizes the spectrum by frequency magnitude rather than by
+        direction, making it less sensitive to orientation artifacts.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are replaced with the finite median
+            before computing the FFT (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Mean L1 distance between radially-averaged power spectra. Lower is better.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import psd_radial_error
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = psd_radial_error(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = apply_nan_mask(y_true_c, y_pred_c, ignore_nan=ignore_nan)
+
+    B, H, W, C, T = y_true_c.shape
+    errors = []
+    for b in range(B):
+        for c in range(C):
+            for t in range(T):
+                true2d = y_true_c[b, :, :, c, t].astype(np.float64)
+                pred2d = y_pred_c[b, :, :, c, t].astype(np.float64)
+
+                true_psd = np.abs(np.fft.rfft2(true2d)) / (H * W)
+                pred_psd = np.abs(np.fft.rfft2(pred2d)) / (H * W)
+
+                true_profile = _radial_average(true_psd)
+                pred_profile = _radial_average(pred_psd)
+
+                n = min(len(true_profile), len(pred_profile))
+                errors.append(np.mean(np.abs(true_profile[:n] - pred_profile[:n])))
+
+    return float(np.mean(errors))
+
+
+def spectral_angle_mapper(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the Spectral Angle Mapper (SAM): the mean angle, in degrees,
+        between the multi-band spectral signature vectors of ground truth
+        and prediction at each pixel. Standard metric in earth observation
+        for comparing multi-spectral/hyperspectral pixel signatures
+        independently of overall brightness.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes, with channel
+            (C) as the spectral-band axis.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are replaced with the finite median
+            before computing the angle (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Mean spectral angle in degrees, in [0, 180]. Lower is better
+            (0 means identical spectral signature direction).
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import spectral_angle_mapper
+
+        gt   = np.random.rand(32, 32, 4)  # 4 spectral bands
+        pred = gt * 1.05
+        score = spectral_angle_mapper(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = apply_nan_mask(y_true_c, y_pred_c, ignore_nan=ignore_nan)
+
+    a = y_true_c.astype(np.float64)
+    b = y_pred_c.astype(np.float64)
+
+    # channel axis is index 3 in canonical (B, H, W, C, T)
+    dot = np.sum(a * b, axis=3)
+    norm_a = np.sqrt(np.sum(a ** 2, axis=3))
+    norm_b = np.sqrt(np.sum(b ** 2, axis=3))
+
+    denom = np.clip(norm_a * norm_b, a_min=1e-12, a_max=None)
+    cos_angle = np.clip(dot / denom, -1.0, 1.0)
+
+    angles_deg = np.degrees(np.arccos(cos_angle))
+
+    return float(np.mean(angles_deg))

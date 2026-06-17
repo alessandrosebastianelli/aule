@@ -7,3 +7,5 @@ from .spectral import *
 from .climate import *
 from .ensemble import *
 from .earth_observation import *
+from .classification import *
+from .uncertainty import *

@@ -13,7 +13,7 @@ import numpy as np
 
 from .._shapes import to_canonical, apply_nan_mask, finite_mask
 
-__all__ = ["ensemble_spread", "crps", "rank_histogram"]
+__all__ = ["ensemble_spread", "crps", "rank_histogram", "brier_score", "spread_skill_ratio", "crps_skill_score"]
 
 
 def ensemble_spread(
@@ -196,3 +196,185 @@ def rank_histogram(
     counts = np.bincount(ranks, minlength=M + 1)[: M + 1]
 
     return counts
+
+
+def brier_score(
+    y_true: np.ndarray,
+    y_ensemble: np.ndarray,
+    threshold: float,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the Brier score for the binary event "value exceeds
+        threshold", using the ensemble fraction exceeding the threshold as
+        the predicted probability. Standard verification metric for
+        probabilistic forecasts of binary events (e.g. probability of
+        exceeding a rainfall or temperature threshold).
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes (no ensemble axis).
+        - y_ensemble : np.ndarray
+            Ensemble array of shape (n_members, *single_member_shape).
+        - threshold : float
+            Threshold defining the binary event (value > threshold).
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite ground truth positions are excluded (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Brier score in [0, 1]. Lower is better (0 = perfect probabilistic forecast).
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import brier_score
+
+        gt       = np.random.rand(64, 64, 1)
+        ensemble = gt[np.newaxis] + np.random.normal(0, 0.1, (10, 64, 64, 1))
+        score = brier_score(gt, ensemble, threshold=0.7)
+        ```
+    '''
+
+    y_true_c = to_canonical(y_true, data_format=data_format)
+    canonical_members = [to_canonical(member, data_format=data_format) for member in y_ensemble]
+    stacked = np.stack(canonical_members, axis=0).astype(np.float64)  # (M, B, H, W, C, T)
+
+    observed = (y_true_c.astype(np.float64) > threshold).astype(np.float64)
+    forecast_prob = np.mean((stacked > threshold).astype(np.float64), axis=0)
+
+    sq_error = (forecast_prob - observed) ** 2
+
+    if ignore_nan:
+        mask = np.isfinite(observed)
+        sq_error = sq_error[mask]
+
+    return float(np.mean(sq_error))
+
+
+def spread_skill_ratio(
+    y_true: np.ndarray,
+    y_ensemble: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the ratio between the ensemble spread (mean standard
+        deviation across members) and the RMSE of the ensemble mean against
+        the ground truth. A well-calibrated ensemble has a ratio close to 1:
+        values below 1 indicate under-dispersion (overconfident ensemble),
+        values above 1 indicate over-dispersion.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes (no ensemble axis).
+        - y_ensemble : np.ndarray
+            Ensemble array of shape (n_members, *single_member_shape).
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from both terms (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Spread/skill ratio. 1.0 indicates good calibration.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import spread_skill_ratio
+
+        gt       = np.random.rand(64, 64, 1)
+        ensemble = gt[np.newaxis] + np.random.normal(0, 0.1, (10, 64, 64, 1))
+        ratio = spread_skill_ratio(gt, ensemble)
+        ```
+    '''
+
+    y_true_c = to_canonical(y_true, data_format=data_format)
+    canonical_members = [to_canonical(member, data_format=data_format) for member in y_ensemble]
+    stacked = np.stack(canonical_members, axis=0).astype(np.float64)  # (M, B, H, W, C, T)
+
+    ensemble_mean = np.mean(stacked, axis=0)
+
+    if ignore_nan:
+        spread = float(np.nanstd(np.where(np.isfinite(stacked), stacked, np.nan), axis=0).mean())
+        diff = ensemble_mean - y_true_c.astype(np.float64)
+        mask = np.isfinite(diff)
+        rmse_value = float(np.sqrt(np.mean(diff[mask] ** 2)))
+    else:
+        spread = float(np.std(stacked, axis=0).mean())
+        diff = ensemble_mean - y_true_c.astype(np.float64)
+        rmse_value = float(np.sqrt(np.mean(diff ** 2)))
+
+    if rmse_value == 0:
+        return float("inf") if spread > 0 else float("nan")
+
+    return float(spread / rmse_value)
+
+
+def crps_skill_score(
+    y_true: np.ndarray,
+    y_ensemble: np.ndarray,
+    y_reference_ensemble: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the CRPS skill score of an ensemble forecast relative to a
+        reference ensemble (e.g. climatology or a baseline model):
+
+            CRPSS = 1 - CRPS(forecast) / CRPS(reference)
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes (no ensemble axis).
+        - y_ensemble : np.ndarray
+            Forecast ensemble array of shape (n_members, *single_member_shape).
+        - y_reference_ensemble : np.ndarray
+            Reference/baseline ensemble array, same shape convention as y_ensemble.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values in y_true are replaced with the
+            finite median before scoring (default: False).
+
+        Returns:
+        --------
+        - value : float
+            CRPS skill score. Positive values mean the forecast improves on
+            the reference; 0 means equal skill; negative means worse than
+            the reference.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import crps_skill_score
+
+        gt        = np.random.rand(64, 64, 1)
+        forecast  = gt[np.newaxis] + np.random.normal(0, 0.05, (10, 64, 64, 1))
+        reference = gt[np.newaxis] + np.random.normal(0, 0.2, (10, 64, 64, 1))
+        score = crps_skill_score(gt, forecast, reference)
+        ```
+    '''
+
+    forecast_crps = crps(y_true, y_ensemble, data_format=data_format, ignore_nan=ignore_nan)
+    reference_crps = crps(y_true, y_reference_ensemble, data_format=data_format, ignore_nan=ignore_nan)
+
+    if reference_crps == 0:
+        return float("nan")
+
+    return float(1.0 - forecast_crps / reference_crps)

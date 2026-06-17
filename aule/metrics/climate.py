@@ -10,9 +10,12 @@
 from typing import Optional
 import numpy as np
 
-from .._shapes import match_shapes, apply_nan_mask, finite_mask
+from .._shapes import match_shapes, to_canonical, apply_nan_mask, finite_mask
 
-__all__ = ["seasonal_error", "percentile_error", "pixelwise_temporal_correlation"]
+__all__ = [
+    "seasonal_error", "percentile_error", "pixelwise_temporal_correlation",
+    "trend_error", "extreme_event_duration_error", "autocorrelation_error",
+]
 
 
 def seasonal_error(
@@ -207,3 +210,249 @@ def pixelwise_temporal_correlation(
     r_map = np.clip(numerator / denominator, -1.0, 1.0)
 
     return r_map
+
+
+def trend_error(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the absolute difference between the linear trend (slope of
+        a least-squares fit over time) of the ground truth spatial-mean time
+        series and that of the prediction. Useful for checking whether a
+        model reproduces long-term warming/cooling or drying/wetting trends,
+        independent of how well it matches short-term variability.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, with a time axis (shapes (b) or (d)).
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D. Must be
+            "hwct" here, since a time axis is required.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the spatial means (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Absolute difference between the two trend slopes (units per time step).
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import trend_error
+
+        t = np.arange(100)
+        gt   = np.tile((0.01 * t).reshape(1, 1, 1, -1), (32, 32, 1, 1))
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = trend_error(gt, pred, data_format="hwct")
+        ```
+    '''
+
+    y_true_c = to_canonical(y_true, data_format=data_format)
+    y_pred_c = to_canonical(y_pred, data_format=data_format)
+
+    if y_true_c.shape[-1] < 2:
+        raise ValueError(
+            "trend_error requires at least 2 time steps; "
+            f"got T={y_true_c.shape[-1]}. Did you forget data_format='hwct'?"
+        )
+
+    if ignore_nan:
+        true_mean = np.nanmean(np.where(np.isfinite(y_true_c), y_true_c, np.nan), axis=(0, 1, 2, 3))
+        pred_mean = np.nanmean(np.where(np.isfinite(y_pred_c), y_pred_c, np.nan), axis=(0, 1, 2, 3))
+    else:
+        true_mean = np.mean(y_true_c, axis=(0, 1, 2, 3))
+        pred_mean = np.mean(y_pred_c, axis=(0, 1, 2, 3))
+
+    t = np.arange(len(true_mean), dtype=np.float64)
+
+    true_slope = float(np.polyfit(t, true_mean, 1)[0])
+    pred_slope = float(np.polyfit(t, pred_mean, 1)[0])
+
+    return float(np.abs(true_slope - pred_slope))
+
+
+def _event_durations(series: np.ndarray, threshold: float, above: bool) -> np.ndarray:
+    '''
+        Finds the durations (in time steps) of consecutive runs where a
+        1D series is above (or below) a threshold.
+
+        Parameters:
+        -----------
+        - series : np.ndarray
+            1D time series.
+        - threshold : float
+            Threshold value.
+        - above : bool
+            If True, finds runs where series > threshold; otherwise series < threshold.
+
+        Returns:
+        --------
+        - durations : np.ndarray
+            1D array of run lengths (in time steps). Empty if no event occurs.
+    '''
+
+    mask = series > threshold if above else series < threshold
+    if not np.any(mask):
+        return np.array([], dtype=np.int64)
+
+    padded = np.concatenate(([0], mask.astype(np.int64), [0]))
+    diffs = np.diff(padded)
+    starts = np.where(diffs == 1)[0]
+    ends = np.where(diffs == -1)[0]
+
+    return (ends - starts).astype(np.int64)
+
+
+def extreme_event_duration_error(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    threshold: float,
+    above: bool = True,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the absolute difference in mean extreme-event duration
+        (e.g. heatwave or cold-wave length) between ground truth and
+        prediction, based on the spatial-mean time series crossing a
+        fixed threshold. An "event" is a run of consecutive time steps
+        above (or below) the threshold.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, with a time axis (shapes (b) or (d)).
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - threshold : float
+            Threshold value defining an extreme event (e.g. a heatwave temperature).
+        - above : bool
+            If True (default), an event is a run above the threshold
+            (e.g. heatwave); if False, a run below it (e.g. cold wave).
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D. Must be
+            "hwct" here, since a time axis is required.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the spatial means (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Absolute difference in mean event duration (in time steps).
+            Returns 0.0 if neither series has any qualifying event.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import extreme_event_duration_error
+
+        gt   = np.random.rand(32, 32, 1, 60) + 0.5
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = extreme_event_duration_error(gt, pred, threshold=0.8, data_format="hwct")
+        ```
+    '''
+
+    y_true_c = to_canonical(y_true, data_format=data_format)
+    y_pred_c = to_canonical(y_pred, data_format=data_format)
+
+    if ignore_nan:
+        true_mean = np.nanmean(np.where(np.isfinite(y_true_c), y_true_c, np.nan), axis=(0, 1, 2, 3))
+        pred_mean = np.nanmean(np.where(np.isfinite(y_pred_c), y_pred_c, np.nan), axis=(0, 1, 2, 3))
+    else:
+        true_mean = np.mean(y_true_c, axis=(0, 1, 2, 3))
+        pred_mean = np.mean(y_pred_c, axis=(0, 1, 2, 3))
+
+    true_durations = _event_durations(true_mean, threshold, above)
+    pred_durations = _event_durations(pred_mean, threshold, above)
+
+    true_avg = float(np.mean(true_durations)) if true_durations.size > 0 else 0.0
+    pred_avg = float(np.mean(pred_durations)) if pred_durations.size > 0 else 0.0
+
+    return float(np.abs(true_avg - pred_avg))
+
+
+def autocorrelation_error(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    max_lag: int = 10,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the mean absolute error between the temporal autocorrelation
+        function (ACF) of the ground truth spatial-mean time series and that
+        of the prediction, up to a maximum lag. Useful for checking whether
+        a model preserves temporal persistence/memory (e.g. drought
+        persistence, slow climate modes).
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, with a time axis (shapes (b) or (d)).
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - max_lag : int
+            Maximum lag (in time steps) to compare (default: 10).
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D. Must be
+            "hwct" here, since a time axis is required.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the spatial means (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Mean absolute error between the two ACFs over lags 1..max_lag. Lower is better.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import autocorrelation_error
+
+        gt   = np.cumsum(np.random.randn(32, 32, 1, 200), axis=-1)
+        pred = gt + np.random.normal(0, 0.1, gt.shape)
+        score = autocorrelation_error(gt, pred, max_lag=10, data_format="hwct")
+        ```
+    '''
+
+    y_true_c = to_canonical(y_true, data_format=data_format)
+    y_pred_c = to_canonical(y_pred, data_format=data_format)
+
+    T = y_true_c.shape[-1]
+    if T <= max_lag:
+        raise ValueError(
+            f"autocorrelation_error requires more time steps than max_lag; "
+            f"got T={T}, max_lag={max_lag}."
+        )
+
+    if ignore_nan:
+        true_mean = np.nanmean(np.where(np.isfinite(y_true_c), y_true_c, np.nan), axis=(0, 1, 2, 3))
+        pred_mean = np.nanmean(np.where(np.isfinite(y_pred_c), y_pred_c, np.nan), axis=(0, 1, 2, 3))
+    else:
+        true_mean = np.mean(y_true_c, axis=(0, 1, 2, 3))
+        pred_mean = np.mean(y_pred_c, axis=(0, 1, 2, 3))
+
+    def _acf(series: np.ndarray, max_lag: int) -> np.ndarray:
+        series = series - np.mean(series)
+        var = np.dot(series, series)
+        if var == 0:
+            return np.zeros(max_lag)
+        return np.array([np.dot(series[:-lag], series[lag:]) / var for lag in range(1, max_lag + 1)])
+
+    true_acf = _acf(true_mean, max_lag)
+    pred_acf = _acf(pred_mean, max_lag)
+
+    return float(np.mean(np.abs(true_acf - pred_acf)))

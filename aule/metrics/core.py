@@ -16,7 +16,10 @@ import numpy as np
 
 from .._shapes import match_shapes, apply_nan_mask, finite_mask
 
-__all__ = ["rmse", "mae", "bias", "pearson_r", "ssim"]
+__all__ = [
+    "rmse", "mse", "mae", "bias", "pearson_r", "ssim", "psnr",
+    "r2_score", "mape", "smape", "nse", "kge", "max_error", "explained_variance",
+]
 
 
 def rmse(
@@ -344,3 +347,508 @@ def ssim(
                 scores.append(_ssim_2d(a2d, b2d, window))
 
     return float(np.mean(scores))
+
+
+def mse(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the Mean Squared Error between ground truth and prediction.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            MSE value, lower is better.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import mse
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.1, gt.shape)
+        score = mse(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    diff = y_true_c.astype(np.float64) - y_pred_c.astype(np.float64)
+
+    if ignore_nan:
+        mask = finite_mask(y_true_c, y_pred_c)
+        diff = diff[mask]
+
+    return float(np.mean(diff ** 2))
+
+
+def psnr(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_range: Optional[float] = None,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the Peak Signal-to-Noise Ratio between ground truth and
+        prediction, in decibels. Standard image-quality metric, also widely
+        reported for super-resolution and downscaling tasks.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_range : float
+            The value range of the data (max - min). If None (default),
+            it is estimated from `y_true` as (max - min) over all finite values.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            PSNR in dB. Higher is better. Returns +inf when prediction is exact.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import psnr
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = psnr(gt, pred, data_range=1.0)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    diff = y_true_c.astype(np.float64) - y_pred_c.astype(np.float64)
+
+    if ignore_nan:
+        mask = finite_mask(y_true_c, y_pred_c)
+        diff = diff[mask]
+        true_finite = y_true_c.astype(np.float64)[mask]
+    else:
+        true_finite = y_true_c.astype(np.float64)
+
+    mse_value = float(np.mean(diff ** 2))
+    if mse_value == 0.0:
+        return float("inf")
+
+    if data_range is None:
+        data_range = float(np.max(true_finite) - np.min(true_finite))
+        if data_range == 0:
+            data_range = 1.0
+
+    return float(20.0 * np.log10(data_range) - 10.0 * np.log10(mse_value))
+
+
+def r2_score(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the coefficient of determination (R^2): 1 minus the ratio
+        of residual variance to total variance of the ground truth.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            R^2 score. 1.0 is a perfect fit, 0.0 means the model is as good
+            as predicting the mean, negative values mean it is worse.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import r2_score
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = r2_score(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    a = y_true_c.astype(np.float64).ravel()
+    b = y_pred_c.astype(np.float64).ravel()
+
+    if ignore_nan:
+        mask = np.isfinite(a) & np.isfinite(b)
+        a, b = a[mask], b[mask]
+
+    ss_res = np.sum((a - b) ** 2)
+    ss_tot = np.sum((a - np.mean(a)) ** 2)
+
+    if ss_tot == 0:
+        return float("nan")
+
+    return float(1.0 - ss_res / ss_tot)
+
+
+def mape(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+    eps: float = 1e-8,
+) -> float:
+    '''
+        Computes the Mean Absolute Percentage Error. Sensitive to small
+        ground truth values, since the error is divided by y_true; prefer
+        `smape` when the data can be close to zero.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+        - eps : float
+            Small constant added to the denominator to avoid division by zero.
+
+        Returns:
+        --------
+        - value : float
+            MAPE, expressed as a percentage (e.g. 5.0 means 5%). Lower is better.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import mape
+
+        gt   = np.random.rand(8, 64, 64, 1) + 1.0
+        pred = gt * 1.05
+        score = mape(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    a = y_true_c.astype(np.float64)
+    b = y_pred_c.astype(np.float64)
+
+    ratio = np.abs((a - b) / (np.abs(a) + eps))
+
+    if ignore_nan:
+        mask = finite_mask(a, b)
+        ratio = ratio[mask]
+
+    return float(np.mean(ratio) * 100.0)
+
+
+def smape(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+    eps: float = 1e-8,
+) -> float:
+    '''
+        Computes the Symmetric Mean Absolute Percentage Error, bounded in
+        [0, 200] and more stable than `mape` when values are close to zero.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+        - eps : float
+            Small constant added to the denominator to avoid division by zero.
+
+        Returns:
+        --------
+        - value : float
+            SMAPE, expressed as a percentage in [0, 200]. Lower is better.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import smape
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = smape(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    a = y_true_c.astype(np.float64)
+    b = y_pred_c.astype(np.float64)
+
+    denom = (np.abs(a) + np.abs(b)) / 2.0 + eps
+    ratio = np.abs(a - b) / denom
+
+    if ignore_nan:
+        mask = finite_mask(a, b)
+        ratio = ratio[mask]
+
+    return float(np.mean(ratio) * 100.0)
+
+
+def nse(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the Nash-Sutcliffe Efficiency, a standard goodness-of-fit
+        metric in hydrology and climate model validation, equivalent to
+        `r2_score` but conventionally named differently in that literature.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            NSE. 1.0 is a perfect fit, 0.0 means as good as the observed mean,
+            negative values mean worse than the mean.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import nse
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = nse(gt, pred)
+        ```
+    '''
+
+    return r2_score(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
+
+
+def kge(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> dict:
+    '''
+        Computes the Kling-Gupta Efficiency and its three components
+        (correlation, variability ratio, bias ratio). Widely used in climate
+        and hydrology model validation since it decomposes error into
+        interpretable sources, unlike a single aggregate score.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - components : dict
+            Dictionary with keys "kge" (overall score, 1.0 is perfect),
+            "r" (Pearson correlation), "alpha" (std ratio, pred/true),
+            "beta" (mean ratio, pred/true).
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import kge
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        result = kge(gt, pred)
+        print(result["kge"], result["r"], result["alpha"], result["beta"])
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    a = y_true_c.astype(np.float64).ravel()
+    b = y_pred_c.astype(np.float64).ravel()
+
+    if ignore_nan:
+        mask = np.isfinite(a) & np.isfinite(b)
+        a, b = a[mask], b[mask]
+
+    mean_a, mean_b = np.mean(a), np.mean(b)
+    std_a, std_b = np.std(a), np.std(b)
+
+    r = float(np.corrcoef(a, b)[0, 1]) if (a.size >= 2 and std_a > 0 and std_b > 0) else float("nan")
+    alpha = float(std_b / std_a) if std_a > 0 else float("nan")
+    beta = float(mean_b / mean_a) if mean_a != 0 else float("nan")
+
+    if any(np.isnan(v) for v in (r, alpha, beta)):
+        score = float("nan")
+    else:
+        score = float(1.0 - np.sqrt((r - 1.0) ** 2 + (alpha - 1.0) ** 2 + (beta - 1.0) ** 2))
+
+    return {"kge": score, "r": r, "alpha": alpha, "beta": beta}
+
+
+def max_error(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the maximum absolute error between ground truth and prediction.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Maximum absolute error. Lower is better.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import max_error
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = max_error(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    diff = np.abs(y_true_c.astype(np.float64) - y_pred_c.astype(np.float64))
+
+    if ignore_nan:
+        mask = finite_mask(y_true_c, y_pred_c)
+        diff = diff[mask]
+
+    return float(np.max(diff))
+
+
+def explained_variance(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the fraction of ground truth variance explained by the
+        prediction: 1 - Var(y_true - y_pred) / Var(y_true). Similar to
+        `r2_score` but invariant to a constant additive bias.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Explained variance score. 1.0 is a perfect fit.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import explained_variance
+
+        gt   = np.random.rand(8, 64, 64, 1)
+        pred = gt + np.random.normal(0, 0.05, gt.shape)
+        score = explained_variance(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    a = y_true_c.astype(np.float64).ravel()
+    b = y_pred_c.astype(np.float64).ravel()
+
+    if ignore_nan:
+        mask = np.isfinite(a) & np.isfinite(b)
+        a, b = a[mask], b[mask]
+
+    var_true = np.var(a)
+    if var_true == 0:
+        return float("nan")
+
+    return float(1.0 - np.var(a - b) / var_true)
