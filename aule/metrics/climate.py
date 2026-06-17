@@ -15,6 +15,7 @@ from .._shapes import match_shapes, to_canonical, apply_nan_mask, finite_mask
 __all__ = [
     "seasonal_error", "percentile_error", "pixelwise_temporal_correlation",
     "trend_error", "extreme_event_duration_error", "autocorrelation_error",
+    "wet_day_frequency_error", "dry_spell_error", "anomaly_correlation_coefficient",
 ]
 
 
@@ -456,3 +457,196 @@ def autocorrelation_error(
     pred_acf = _acf(pred_mean, max_lag)
 
     return float(np.mean(np.abs(true_acf - pred_acf)))
+
+
+def wet_day_frequency_error(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    threshold: float = 1.0,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the absolute difference in "wet day" frequency (the
+        fraction of time steps where the spatial-mean value exceeds a
+        threshold, e.g. a precipitation amount) between ground truth and
+        prediction. A standard precipitation-model diagnostic, since models
+        often get total precipitation right while drastically over- or
+        under-estimating how many days actually have rain ("drizzle bias").
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, with a time axis (shapes (b) or (d)).
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - threshold : float
+            Value above which a time step counts as a "wet day" (default: 1.0).
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D. Must be
+            "hwct" here, since a time axis is required.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the spatial means (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Absolute difference in wet-day frequency, in [0, 1]. Lower is better.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import wet_day_frequency_error
+
+        gt   = np.random.exponential(1.0, (32, 32, 1, 60))
+        pred = gt * 0.9
+        score = wet_day_frequency_error(gt, pred, threshold=1.0, data_format="hwct")
+        ```
+    '''
+
+    y_true_c = to_canonical(y_true, data_format=data_format)
+    y_pred_c = to_canonical(y_pred, data_format=data_format)
+
+    if ignore_nan:
+        true_mean = np.nanmean(np.where(np.isfinite(y_true_c), y_true_c, np.nan), axis=(0, 1, 2, 3))
+        pred_mean = np.nanmean(np.where(np.isfinite(y_pred_c), y_pred_c, np.nan), axis=(0, 1, 2, 3))
+    else:
+        true_mean = np.mean(y_true_c, axis=(0, 1, 2, 3))
+        pred_mean = np.mean(y_pred_c, axis=(0, 1, 2, 3))
+
+    true_freq = float(np.mean(true_mean > threshold))
+    pred_freq = float(np.mean(pred_mean > threshold))
+
+    return float(np.abs(true_freq - pred_freq))
+
+
+def dry_spell_error(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    threshold: float = 1.0,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the absolute difference in mean dry-spell length (runs of
+        consecutive time steps with the spatial-mean value below a
+        threshold, e.g. days without meaningful precipitation) between
+        ground truth and prediction. Complements `extreme_event_duration_error`,
+        which is threshold-direction-agnostic but requires the caller to set
+        `above=False`; this is a convenience wrapper specialized for the
+        common dry-spell use case with a sensible default threshold.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, with a time axis (shapes (b) or (d)).
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - threshold : float
+            Value below which a time step counts as "dry" (default: 1.0).
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D. Must be
+            "hwct" here, since a time axis is required.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the spatial means (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Absolute difference in mean dry-spell duration (in time steps).
+            Returns 0.0 if neither series has any qualifying dry spell.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import dry_spell_error
+
+        gt   = np.random.exponential(1.0, (32, 32, 1, 60))
+        pred = gt * 1.1
+        score = dry_spell_error(gt, pred, threshold=1.0, data_format="hwct")
+        ```
+    '''
+
+    return extreme_event_duration_error(
+        y_true, y_pred, threshold=threshold, above=False,
+        data_format=data_format, ignore_nan=ignore_nan,
+    )
+
+
+def anomaly_correlation_coefficient(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    climatology: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the Anomaly Correlation Coefficient (ACC): the Pearson
+        correlation between ground truth and prediction *anomalies*
+        (deviations from a reference climatology), rather than between the
+        raw values. Standard verification metric in numerical weather
+        prediction and seasonal/climate forecasting, since it isolates a
+        model's skill at predicting departures from normal rather than
+        simply tracking the climatological seasonal cycle (which any
+        trivial model could get right).
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - climatology : np.ndarray
+            Reference climatology, broadcastable against y_true/y_pred
+            after canonicalization (e.g. a per-pixel long-term mean with
+            the same H/W/C as y_true, possibly with batch/time size 1).
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D. Applied to
+            y_true, y_pred and climatology.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            ACC in [-1, 1]. Higher is better; values near 1 indicate the
+            model correctly predicts the sign and magnitude of anomalies.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import anomaly_correlation_coefficient
+
+        climatology = np.random.rand(1, 32, 32, 1, 1)  # long-term mean, broadcastable
+        gt   = climatology + np.random.normal(0, 0.2, (10, 32, 32, 1, 1))
+        pred = climatology + np.random.normal(0, 0.2, (10, 32, 32, 1, 1))
+        score = anomaly_correlation_coefficient(gt, pred, climatology)
+        ```
+    '''
+
+    y_true_c = to_canonical(y_true, data_format=data_format)
+    y_pred_c = to_canonical(y_pred, data_format=data_format)
+    clim_c = to_canonical(climatology, data_format=data_format)
+
+    true_anomaly = y_true_c.astype(np.float64) - clim_c.astype(np.float64)
+    pred_anomaly = y_pred_c.astype(np.float64) - clim_c.astype(np.float64)
+
+    true_anomaly, pred_anomaly = np.broadcast_arrays(true_anomaly, pred_anomaly)
+
+    a = true_anomaly.ravel()
+    b = pred_anomaly.ravel()
+
+    if ignore_nan:
+        mask = np.isfinite(a) & np.isfinite(b)
+        a, b = a[mask], b[mask]
+
+    if a.size < 2 or np.std(a) == 0 or np.std(b) == 0:
+        return float("nan")
+
+    return float(np.corrcoef(a, b)[0, 1])

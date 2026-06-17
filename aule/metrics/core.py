@@ -19,6 +19,7 @@ from .._shapes import match_shapes, apply_nan_mask, finite_mask
 __all__ = [
     "rmse", "mse", "mae", "bias", "pearson_r", "ssim", "psnr",
     "r2_score", "mape", "smape", "nse", "kge", "max_error", "explained_variance",
+    "wasserstein_distance", "quantile_mapping_bias",
 ]
 
 
@@ -852,3 +853,136 @@ def explained_variance(
         return float("nan")
 
     return float(1.0 - np.var(a - b) / var_true)
+
+
+def wasserstein_distance(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the 1D Wasserstein distance (Earth Mover's Distance)
+        between the marginal distributions of ground truth and prediction,
+        flattened over all dimensions. Unlike `ks_test`-style statistics,
+        it accounts for the magnitude of distributional shifts, not just
+        their location, making it a good fit for heavy-tailed data (e.g.
+        precipitation, extreme events) where a few large discrepancies in
+        the tail matter more than many small ones in the bulk.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Wasserstein distance, in the same units as the data. Lower is better
+            (0 means identical distributions).
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import wasserstein_distance
+
+        gt   = np.random.exponential(1.0, (8, 64, 64, 1))
+        pred = np.random.exponential(1.1, (8, 64, 64, 1))
+        score = wasserstein_distance(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    a = y_true_c.astype(np.float64).ravel()
+    b = y_pred_c.astype(np.float64).ravel()
+
+    if ignore_nan:
+        a = a[np.isfinite(a)]
+        b = b[np.isfinite(b)]
+
+    a_sorted = np.sort(a)
+    b_sorted = np.sort(b)
+
+    # interpolate onto a common quantile grid when sample sizes differ,
+    # so the sorted-array difference below is well defined either way
+    n = max(a_sorted.size, b_sorted.size)
+    quantiles = np.linspace(0, 1, n)
+
+    a_quantiles = np.quantile(a_sorted, quantiles)
+    b_quantiles = np.quantile(b_sorted, quantiles)
+
+    return float(np.mean(np.abs(a_quantiles - b_quantiles)))
+
+
+def quantile_mapping_bias(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    n_quantiles: int = 100,
+    data_format: Optional[str] = None,
+    ignore_nan: bool = False,
+) -> float:
+    '''
+        Computes the mean absolute difference between the quantile function
+        (inverse CDF) of the prediction and that of the ground truth,
+        evaluated at evenly spaced quantiles. This is the diagnostic
+        typically used before applying quantile-mapping bias correction to
+        climate model output: it tells you how much the prediction's full
+        distribution (not just its mean) needs to be shifted/stretched to
+        match observations.
+
+        Parameters:
+        -----------
+        - y_true : np.ndarray
+            Ground truth array, any of the 4 supported shapes.
+        - y_pred : np.ndarray
+            Prediction array, same shape as y_true.
+        - n_quantiles : int
+            Number of evenly spaced quantiles to evaluate, in (1, 100) (default: 100).
+        - data_format : str
+            "bhwc" or "hwct", required only when arrays are 4D.
+        - ignore_nan : bool
+            If True, non-finite values are excluded from the computation (default: False).
+
+        Returns:
+        --------
+        - value : float
+            Mean absolute quantile-function bias. Lower is better (0 means
+            the two distributions match at every quantile evaluated).
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.metrics import quantile_mapping_bias
+
+        gt   = np.random.exponential(1.0, (8, 64, 64, 1))
+        pred = gt * 1.1  # consistently overestimates magnitude
+        score = quantile_mapping_bias(gt, pred)
+        ```
+    '''
+
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+
+    a = y_true_c.astype(np.float64).ravel()
+    b = y_pred_c.astype(np.float64).ravel()
+
+    if ignore_nan:
+        a = a[np.isfinite(a)]
+        b = b[np.isfinite(b)]
+
+    quantile_levels = np.linspace(0, 1, n_quantiles)
+
+    true_q = np.quantile(a, quantile_levels)
+    pred_q = np.quantile(b, quantile_levels)
+
+    return float(np.mean(np.abs(pred_q - true_q)))

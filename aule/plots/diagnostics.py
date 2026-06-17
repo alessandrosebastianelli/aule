@@ -413,6 +413,8 @@ def plot_error_map(
     time_index: int = 0,
     data_format: Optional[str] = None,
     abs_error: bool = True,
+    norm_type: str = "linear",
+    norm_kwargs: Optional[dict] = None,
     title: Optional[str] = None,
     save_path: Optional[str] = None,
 ) -> Tuple[plt.Figure, plt.Axes]:
@@ -438,6 +440,15 @@ def plot_error_map(
         - abs_error : bool
             If True (default), shows |pred - true| with a sequential colormap;
             if False, shows the signed error with a diverging colormap.
+        - norm_type : str
+            Color normalization, used only when `abs_error=False` (the
+            signed/diverging branch): "linear" (default), "power"
+            (emphasizes extremes via `gamma` in `norm_kwargs`), "symlog"
+            (strongest extreme contrast via `linthresh` in `norm_kwargs`),
+            or "twoslope" (off-zero `vcenter` in `norm_kwargs`). See
+            `aule.plots._style.resolve_diverging_norm`.
+        - norm_kwargs : dict
+            Extra keyword arguments forwarded to the chosen normalization.
         - title : str
             Plot title. Defaults to a description based on `abs_error`.
         - save_path : str
@@ -458,10 +469,14 @@ def plot_error_map(
         gt   = np.random.rand(64, 64, 1)
         pred = gt + np.random.normal(0, 0.1, gt.shape)
         fig, ax = plot_error_map(gt, pred)
+
+        # emphasize extreme signed errors
+        fig, ax = plot_error_map(gt, pred, abs_error=False, norm_type="symlog",
+                                  norm_kwargs={"linthresh": 0.02})
         ```
     '''
 
-    from ._style import symmetric_norm, sequential_norm, make_geo_axis, SEQUENTIAL_CMAP, DIFF_CMAP
+    from ._style import sequential_norm, make_geo_axis, resolve_diverging_norm, SEQUENTIAL_CMAP, DIFF_CMAP
 
     apply_style()
 
@@ -479,7 +494,7 @@ def plot_error_map(
         default_title = "Absolute error map (|pred - GT|)"
     else:
         cmap = DIFF_CMAP
-        norm = symmetric_norm(error_field)
+        norm = resolve_diverging_norm(error_field, norm_type=norm_type, **(norm_kwargs or {}))
         default_title = "Signed error map (pred - GT)"
 
     use_geo = lat is not None and lon is not None

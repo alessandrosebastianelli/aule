@@ -9,3 +9,4 @@ from .ensemble import *
 from .earth_observation import *
 from .classification import *
 from .uncertainty import *
+from .spatial_verification import *

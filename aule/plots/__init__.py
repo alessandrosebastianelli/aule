@@ -8,3 +8,4 @@ from .climate import *
 from .ensemble import *
 from .diagnostics import *
 from .classification import *
+from .advanced import *

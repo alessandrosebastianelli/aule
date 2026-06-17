@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from .._shapes import to_canonical
-from ._style import apply_style, symmetric_norm, sequential_norm, make_geo_axis, maybe_save, DIVERGING_CMAP, DIFF_CMAP
+from ._style import apply_style, symmetric_norm, sequential_norm, make_geo_axis, maybe_save, resolve_diverging_norm, DIVERGING_CMAP, DIFF_CMAP
 
 __all__ = ["plot_field_comparison", "plot_bias_map", "plot_correlation_map"]
 
@@ -93,6 +93,8 @@ def plot_field_comparison(
     channel_index: int = 0,
     time_index: int = 0,
     data_format: Optional[str] = None,
+    diff_norm_type: str = "linear",
+    diff_norm_kwargs: Optional[dict] = None,
     title: str = "Ground truth vs prediction",
     save_path: Optional[str] = None,
 ) -> Tuple[plt.Figure, np.ndarray]:
@@ -113,6 +115,19 @@ def plot_field_comparison(
             Which slice to display, when the corresponding axis has size > 1.
         - data_format : str
             "bhwc" or "hwct", required only when arrays are 4D.
+        - diff_norm_type : str
+            Color normalization for the difference panel only: "linear"
+            (default), "power" (compresses near-zero values, emphasizing
+            extremes; tune via `gamma` in `diff_norm_kwargs`), "symlog"
+            (linear near zero, logarithmic beyond a threshold, the
+            strongest extreme-value contrast; tune via `linthresh` in
+            `diff_norm_kwargs`), or "twoslope" (anchors a possibly
+            off-zero `vcenter` to the colormap midpoint, for asymmetric
+            differences). See `aule.plots._style.resolve_diverging_norm`.
+        - diff_norm_kwargs : dict
+            Extra keyword arguments forwarded to the chosen normalization
+            (e.g. `{"gamma": 0.4}` for "power", `{"linthresh": 0.05}` for
+            "symlog").
         - title : str
             Figure-level title.
         - save_path : str
@@ -134,6 +149,11 @@ def plot_field_comparison(
         gt   = np.random.rand(64, 64, 1)
         pred = gt + np.random.normal(0, 0.1, gt.shape)
         fig, axes = plot_field_comparison(gt, pred)
+
+        # emphasize extreme differences with a symlog normalization
+        fig, axes = plot_field_comparison(
+            gt, pred, diff_norm_type="symlog", diff_norm_kwargs={"linthresh": 0.02}
+        )
         ```
     '''
 
@@ -157,7 +177,7 @@ def plot_field_comparison(
         fig, axes = plt.subplots(1, 3, figsize=(15, 5))
 
     field_norm = sequential_norm(gt_field)
-    diff_norm = symmetric_norm(diff_field)
+    diff_norm = resolve_diverging_norm(diff_field, norm_type=diff_norm_type, **(diff_norm_kwargs or {}))
 
     _draw_field(fig, axes[0], gt_field, lat, lon, DIVERGING_CMAP, field_norm, "Ground truth")
     _draw_field(fig, axes[1], pred_field, lat, lon, DIVERGING_CMAP, field_norm, "Prediction")
@@ -179,6 +199,8 @@ def plot_bias_map(
     channel_index: int = 0,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    norm_type: str = "linear",
+    norm_kwargs: Optional[dict] = None,
     title: str = "Spatial bias map",
     save_path: Optional[str] = None,
 ) -> Tuple[plt.Figure, plt.Axes]:
@@ -200,6 +222,14 @@ def plot_bias_map(
             "bhwc" or "hwct", required only when arrays are 4D.
         - ignore_nan : bool
             If True, non-finite values are excluded from the mean (default: False).
+        - norm_type : str
+            Color normalization: "linear" (default), "power" (emphasizes
+            extremes via `gamma` in `norm_kwargs`), "symlog" (strongest
+            extreme contrast via `linthresh` in `norm_kwargs`), or
+            "twoslope" (off-zero `vcenter` in `norm_kwargs`, for
+            asymmetric bias). See `aule.plots._style.resolve_diverging_norm`.
+        - norm_kwargs : dict
+            Extra keyword arguments forwarded to the chosen normalization.
         - title : str
             Plot title.
         - save_path : str
@@ -220,6 +250,9 @@ def plot_bias_map(
         gt   = np.random.rand(20, 64, 64, 1)
         pred = gt + np.random.normal(0, 0.1, gt.shape)
         fig, ax = plot_bias_map(gt, pred)
+
+        # emphasize extreme bias regions
+        fig, ax = plot_bias_map(gt, pred, norm_type="symlog", norm_kwargs={"linthresh": 0.02})
         ```
     '''
 
@@ -243,7 +276,7 @@ def plot_bias_map(
     else:
         fig, ax = plt.subplots(figsize=(7, 6))
 
-    norm = symmetric_norm(bias_field)
+    norm = resolve_diverging_norm(bias_field, norm_type=norm_type, **(norm_kwargs or {}))
     _draw_field(fig, ax, bias_field, lat, lon, DIFF_CMAP, norm, title)
 
     maybe_save(fig, save_path)

@@ -94,6 +94,280 @@ def sequential_norm(data: np.ndarray, pct: float = 1.0) -> plt.Normalize:
     return plt.Normalize(vmin=lo, vmax=hi)
 
 
+def power_norm(
+    data: Optional[np.ndarray] = None,
+    gamma: float = 0.5,
+    vmin: Optional[float] = None,
+    vmax: Optional[float] = None,
+) -> mcolors.FuncNorm:
+    '''
+        Builds a symmetric power-law color normalization: values are
+        transformed via `sign(x) * |x|**gamma` before mapping to the
+        colormap. Useful for divergent data dominated by near-zero noise,
+        where a small `gamma` (e.g. 0.3-0.5) pulls more of the colormap
+        towards extreme values so they stand out more than under a plain
+        linear normalization, while keeping the transform smooth and
+        continuous everywhere (no break in the color gradient near zero).
+
+        Parameters:
+        -----------
+        - data : np.ndarray
+            Optional array to derive a symmetric (vmin, vmax) range from,
+            via the max absolute finite value. Ignored if both vmin and
+            vmax are given explicitly.
+        - gamma : float
+            Power-law exponent, in (0, 1]. Smaller values compress the
+            near-zero range more aggressively, pushing color contrast
+            towards the extremes (default: 0.5, a square-root normalization).
+            Values much below ~0.3 tend to make background noise visible
+            as speckle; tune gradually.
+        - vmin, vmax : float
+            Explicit symmetric range. If not given, both default to the
+            max absolute finite value of `data` (or +-1.0 if `data` is
+            also not given).
+
+        Returns:
+        --------
+        - norm : matplotlib.colors.FuncNorm
+            Normalization object usable as the `norm=` argument to
+            `imshow`/`pcolormesh`.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.plots._style import power_norm
+
+        data = np.random.normal(0, 0.05, (100, 100))
+        norm = power_norm(data, gamma=0.4)
+        ```
+    '''
+
+    if vmin is None or vmax is None:
+        if data is not None:
+            finite = data[np.isfinite(data)]
+            v = float(np.max(np.abs(finite))) if finite.size > 0 else 1.0
+        else:
+            v = 1.0
+        vmin = -v if vmin is None else vmin
+        vmax = v if vmax is None else vmax
+
+    def forward(x):
+        return np.sign(x) * np.abs(x) ** gamma
+
+    def inverse(y):
+        return np.sign(y) * np.abs(y) ** (1.0 / gamma)
+
+    return mcolors.FuncNorm((forward, inverse), vmin=vmin, vmax=vmax)
+
+
+def symlog_norm(
+    data: Optional[np.ndarray] = None,
+    linthresh: Optional[float] = None,
+    linscale: float = 0.5,
+    vmin: Optional[float] = None,
+    vmax: Optional[float] = None,
+    base: float = 10.0,
+) -> mcolors.SymLogNorm:
+    '''
+        Builds a symmetric-log color normalization: linear within
+        +-`linthresh` of zero (so background noise near zero stays calm),
+        logarithmic beyond it (so extreme values spread across more of the
+        colormap, instead of saturating quickly to the same dark color as
+        under a linear normalization). Generally gives the strongest
+        extreme-value contrast among aule's normalization helpers, at the
+        cost of making small near-threshold fluctuations more visible as
+        speckle outside the linear zone.
+
+        Parameters:
+        -----------
+        - data : np.ndarray
+            Optional array used to pick sensible defaults for `linthresh`
+            (a small fraction of the data's robust spread) and the
+            symmetric (vmin, vmax) range, when not given explicitly.
+        - linthresh : float
+            Half-width of the linear region around zero. If None and
+            `data` is given, defaults to the 75th percentile of |data|
+            (a reasonable "most values are noise" cutoff); if `data` is
+            also None, defaults to 0.03.
+        - linscale : float
+            Relative size of the linear region compared to one decade of
+            the log region, as in `matplotlib.colors.SymLogNorm` (default: 0.5).
+        - vmin, vmax : float
+            Explicit symmetric range. Defaults to the max absolute finite
+            value of `data` (or +-1.0 if `data` is also not given).
+        - base : float
+            Logarithm base for the non-linear region (default: 10).
+
+        Returns:
+        --------
+        - norm : matplotlib.colors.SymLogNorm
+            Normalization object usable as the `norm=` argument to
+            `imshow`/`pcolormesh`.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.plots._style import symlog_norm
+
+        data = np.random.normal(0, 0.05, (100, 100))
+        norm = symlog_norm(data, linthresh=0.03)
+        ```
+    '''
+
+    if data is not None:
+        finite = data[np.isfinite(data)]
+    else:
+        finite = np.array([])
+
+    if vmin is None or vmax is None:
+        v = float(np.max(np.abs(finite))) if finite.size > 0 else 1.0
+        vmin = -v if vmin is None else vmin
+        vmax = v if vmax is None else vmax
+
+    if linthresh is None:
+        if finite.size > 0:
+            linthresh = float(np.percentile(np.abs(finite), 75))
+            if linthresh <= 0:
+                linthresh = 0.03
+        else:
+            linthresh = 0.03
+
+    return mcolors.SymLogNorm(linthresh=linthresh, linscale=linscale, vmin=vmin, vmax=vmax, base=base)
+
+
+def asymmetric_twoslope_norm(
+    data: Optional[np.ndarray] = None,
+    vcenter: float = 0.0,
+    vmin: Optional[float] = None,
+    vmax: Optional[float] = None,
+) -> mcolors.TwoSlopeNorm:
+    '''
+        Builds a two-slope color normalization anchoring a chosen center
+        value (not necessarily 0) to the colormap's midpoint, with
+        independent linear scaling on either side. Useful for divergent
+        data that is not symmetric around zero (e.g. mostly small positive
+        anomalies with a few large negative ones, or vice versa), where a
+        plain symmetric normalization would waste colormap range on one
+        side and clip the other.
+
+        Parameters:
+        -----------
+        - data : np.ndarray
+            Optional array to derive (vmin, vmax) from (min/max finite
+            values), when not given explicitly.
+        - vcenter : float
+            The data value mapped to the colormap's midpoint color
+            (default: 0.0).
+        - vmin, vmax : float
+            Explicit range. Defaults to the min/max finite value of `data`
+            (or (-1.0, 1.0) if `data` is also not given). Both are nudged
+            outward slightly if they would otherwise equal `vcenter`.
+
+        Returns:
+        --------
+        - norm : matplotlib.colors.TwoSlopeNorm
+            Normalization object usable as the `norm=` argument to
+            `imshow`/`pcolormesh`.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.plots._style import asymmetric_twoslope_norm
+
+        # mostly small positive values with a few strong negative dips
+        data = np.random.exponential(0.2, (100, 100)) - 0.3
+        norm = asymmetric_twoslope_norm(data, vcenter=0.0)
+        ```
+    '''
+
+    if vmin is None or vmax is None:
+        if data is not None:
+            finite = data[np.isfinite(data)]
+        else:
+            finite = np.array([])
+        if finite.size > 0:
+            vmin = float(np.min(finite)) if vmin is None else vmin
+            vmax = float(np.max(finite)) if vmax is None else vmax
+        else:
+            vmin = -1.0 if vmin is None else vmin
+            vmax = 1.0 if vmax is None else vmax
+
+    if vmin >= vcenter:
+        vmin = vcenter - 1e-6
+    if vmax <= vcenter:
+        vmax = vcenter + 1e-6
+
+    return mcolors.TwoSlopeNorm(vcenter=vcenter, vmin=vmin, vmax=vmax)
+
+
+def resolve_diverging_norm(
+    data: Optional[np.ndarray] = None,
+    norm_type: str = "linear",
+    pct: float = 2.0,
+    **norm_kwargs,
+):
+    '''
+        Dispatches to the appropriate divergent color normalization
+        helper by name, so plotting functions can expose a single
+        `norm_type` string parameter instead of requiring the caller to
+        import and build a normalization object directly.
+
+        Parameters:
+        -----------
+        - data : np.ndarray
+            Array of values to derive the normalization range from.
+        - norm_type : str
+            One of:
+            - "linear" (default): plain symmetric linear scaling via
+              `symmetric_norm`, using the `pct` percentile envelope.
+            - "power": power-law normalization via `power_norm`
+              (pass `gamma` in `norm_kwargs` to tune, default 0.5).
+            - "symlog": symmetric-log normalization via `symlog_norm`
+              (pass `linthresh`/`linscale`/`base` in `norm_kwargs`).
+            - "twoslope": two-slope normalization via
+              `asymmetric_twoslope_norm` (pass `vcenter` in `norm_kwargs`
+              for asymmetric data; defaults to 0.0).
+        - pct : float
+            Percentile envelope used only by `norm_type="linear"` (default: 2.0).
+        - **norm_kwargs
+            Forwarded to the underlying normalization helper.
+
+        Returns:
+        --------
+        - norm : a matplotlib Normalize-compatible object.
+
+        Usage:
+        ------
+
+        ```python
+        import numpy as np
+        from aule.plots._style import resolve_diverging_norm
+
+        data = np.random.normal(0, 0.05, (100, 100))
+        norm = resolve_diverging_norm(data, norm_type="symlog", linthresh=0.03)
+        ```
+    '''
+
+    if norm_type == "linear":
+        return symmetric_norm(data, pct=pct)
+    if norm_type == "power":
+        return power_norm(data, **norm_kwargs)
+    if norm_type == "symlog":
+        return symlog_norm(data, **norm_kwargs)
+    if norm_type == "twoslope":
+        return asymmetric_twoslope_norm(data, **norm_kwargs)
+
+    raise ValueError(
+        f"Unknown norm_type '{norm_type}'. Expected one of: 'linear', 'power', 'symlog', 'twoslope'."
+    )
+
+
 def make_geo_axis(
     fig: plt.Figure,
     rect: Tuple[float, float, float, float] = (0.0, 0.0, 1.0, 1.0),
