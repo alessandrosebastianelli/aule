@@ -49,13 +49,14 @@ fig, ax = plot_scatter(gt, pred, save_path="scatter.png")
 
 Metrics are organized by family in `aule.metrics`, all importable directly from `aule.metrics`:
 
-- **core**: `rmse`, `mse`, `mae`, `bias`, `pearson_r`, `ssim`, `psnr`, `r2_score`, `mape`, `smape`, `nse`, `kge`, `max_error`, `explained_variance`
+- **core**: `rmse`, `mse`, `mae`, `bias`, `pearson_r`, `ssim`, `psnr`, `r2_score`, `mape`, `smape`, `nse`, `kge`, `max_error`, `explained_variance`, `wasserstein_distance`, `quantile_mapping_bias`
 - **spectral**: `spectral_error`, `gradient_error`, `psd_radial_error`, `spectral_angle_mapper`
-- **climate**: `seasonal_error`, `percentile_error`, `pixelwise_temporal_correlation`, `trend_error`, `extreme_event_duration_error`, `autocorrelation_error`
+- **climate**: `seasonal_error`, `percentile_error`, `pixelwise_temporal_correlation`, `trend_error`, `extreme_event_duration_error`, `autocorrelation_error`, `wet_day_frequency_error`, `dry_spell_error`, `anomaly_correlation_coefficient`
 - **ensemble**: `ensemble_spread`, `crps`, `rank_histogram`, `brier_score`, `spread_skill_ratio`, `crps_skill_score`
 - **earth_observation**: `normalized_difference_index`, `index_error`, `change_detection_error`
 - **classification**: `iou`, `dice`, `precision_recall_f1`, `confusion_matrix_metrics`, `cohen_kappa` (binary or multi-class, via `average`/`num_classes`)
 - **uncertainty**: `picp`, `pit_histogram`
+- **spatial_verification**: `fractions_skill_score` (neighborhood-based, displacement-tolerant), `energy_score` (multivariate CRPS generalization)
 
 Plots are organized similarly in `aule.plots`:
 
@@ -65,6 +66,44 @@ Plots are organized similarly in `aule.plots`:
 - **ensemble**: `plot_ensemble_spread_map`, `plot_rank_histogram`
 - **diagnostics**: `plot_taylor_diagram`, `plot_boxplot_comparison`, `plot_violin_comparison`, `plot_time_series`, `plot_error_map`
 - **classification**: `plot_confusion_matrix`, `plot_reliability_diagram`
+- **advanced**: `plot_hovmoller`, `plot_cdf_comparison`, `plot_spectral_density`, `plot_time_evolution`
+
+## Divergent colormap normalizations
+
+`plot_bias_map`, `plot_error_map` (signed branch), and `plot_field_comparison`
+(difference panel) expose a `norm_type` parameter to better highlight extreme
+values on divergent maps, beyond the default `"linear"` scaling:
+
+- `"power"`: power-law compression of the near-zero range (tune via `gamma`
+  in `norm_kwargs`, default 0.5); a smooth, mild way to make extremes stand
+  out more without disturbing background noise.
+- `"symlog"`: linear near zero (within `linthresh`), logarithmic beyond it;
+  the strongest extreme-value contrast, at the cost of making near-threshold
+  noise visible as speckle.
+- `"twoslope"`: anchors a (possibly off-zero) `vcenter` to the colormap
+  midpoint, for data that isn't symmetric around zero.
+
+```python
+from aule.plots import plot_bias_map
+
+fig, ax = plot_bias_map(gt, pred, norm_type="symlog", norm_kwargs={"linthresh": 0.02})
+```
+
+The underlying normalization builders (`power_norm`, `symlog_norm`,
+`asymmetric_twoslope_norm`, and the `resolve_diverging_norm` dispatcher) are
+available directly from `aule.plots._style` for custom plots.
+
+## Automatic validation report
+
+`aule.report.generate_report` runs a curated set of metrics and plots and assembles
+them into a single self-contained HTML file (no external assets, figures embedded
+as base64 PNGs):
+
+```python
+from aule.report import generate_report
+
+generate_report(gt, pred, save_path="report.html")
+```
 
 ## Object-oriented usage
 
@@ -94,6 +133,9 @@ family, each runnable end-to-end:
 5. `05_classification_metrics.ipynb`
 6. `06_plots.ipynb`
 7. `07_aule_class.ipynb`
+8. `08_spatial_verification_and_advanced_plots.ipynb`
+9. `09_validation_report.ipynb`
+10. `10_color_normalization.ipynb`
 
 ## Documentation
 
