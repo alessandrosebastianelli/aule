@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aule"
-version = "0.1.0"
+version = "0.0.2"
 authors = [
-  { name="Alessandro Sebastianelli", email="alessandro.sebastianelli1995@gmail.com" },
+  { name="Alessandro Sebastianelli", email="asebastianelli@ieee.org" },
 ]
 description = "Validation metrics and plots for machine learning models, with a focus on earth observation and climate science."
 readme = "README.md"
