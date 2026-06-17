@@ -5,6 +5,5 @@ aule.egg-info
 build
 dist
 tmp
-docs
 .DS_Store
 *~
