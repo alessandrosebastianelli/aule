@@ -45,6 +45,27 @@ fig, axes = plot_field_comparison(gt, pred)
 fig, ax = plot_scatter(gt, pred, save_path="scatter.png")
 ```
 
+## What's included
+
+Metrics are organized by family in `aule.metrics`, all importable directly from `aule.metrics`:
+
+- **core**: `rmse`, `mse`, `mae`, `bias`, `pearson_r`, `ssim`, `psnr`, `r2_score`, `mape`, `smape`, `nse`, `kge`, `max_error`, `explained_variance`
+- **spectral**: `spectral_error`, `gradient_error`, `psd_radial_error`, `spectral_angle_mapper`
+- **climate**: `seasonal_error`, `percentile_error`, `pixelwise_temporal_correlation`, `trend_error`, `extreme_event_duration_error`, `autocorrelation_error`
+- **ensemble**: `ensemble_spread`, `crps`, `rank_histogram`, `brier_score`, `spread_skill_ratio`, `crps_skill_score`
+- **earth_observation**: `normalized_difference_index`, `index_error`, `change_detection_error`
+- **classification**: `iou`, `dice`, `precision_recall_f1`, `confusion_matrix_metrics`, `cohen_kappa` (binary or multi-class, via `average`/`num_classes`)
+- **uncertainty**: `picp`, `pit_histogram`
+
+Plots are organized similarly in `aule.plots`:
+
+- **core**: `plot_scatter`, `plot_qq`, `plot_histogram_comparison`, `plot_error_histogram`
+- **spatial**: `plot_field_comparison`, `plot_bias_map`, `plot_correlation_map` (optional cartopy basemap via `lat`/`lon`)
+- **climate**: `plot_temporal_trend`, `plot_temporal_scatter`
+- **ensemble**: `plot_ensemble_spread_map`, `plot_rank_histogram`
+- **diagnostics**: `plot_taylor_diagram`, `plot_boxplot_comparison`, `plot_violin_comparison`, `plot_time_series`, `plot_error_map`
+- **classification**: `plot_confusion_matrix`, `plot_reliability_diagram`
+
 ## Object-oriented usage
 
 Every metric and plot is also available as a method on the `aule` class,
@@ -60,6 +81,19 @@ print(v.rmse())
 print(v.pearson_r())
 fig, ax = v.plot_scatter(save_path="scatter.png")
 ```
+
+## Notebooks
+
+The `notebooks/` folder contains worked examples for every metric and plot
+family, each runnable end-to-end:
+
+1. `01_core_metrics.ipynb`
+2. `02_spectral_and_earth_observation_metrics.ipynb`
+3. `03_climate_metrics.ipynb`
+4. `04_ensemble_and_uncertainty_metrics.ipynb`
+5. `05_classification_metrics.ipynb`
+6. `06_plots.ipynb`
+7. `07_aule_class.ipynb`
 
 ## Documentation
 
