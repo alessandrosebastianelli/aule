@@ -26,14 +26,15 @@
             <ul>
   <li><a href="#aule">aule</a>
   <ul>
+    <li><a href="#install">Install</a></li>
     <li><a href="#supported-input-shapes">Supported input shapes</a></li>
-    <li><a href="#installation">Installation</a></li>
-    <li><a href="#quick-example">Quick example</a></li>
-    <li><a href="#whats-included">What's included</a></li>
-    <li><a href="#divergent-colormap-normalizations">Divergent colormap normalizations</a></li>
+    <li><a href="#quick-start">Quick start</a></li>
+    <li><a href="#logging">Logging</a></li>
+    <li><a href="#metrics">Metrics</a></li>
+    <li><a href="#plots">Plots</a></li>
+    <li><a href="#shape-guardrails">Shape guardrails</a></li>
+    <li><a href="#object-oriented-api">Object-oriented API</a></li>
     <li><a href="#automatic-validation-report">Automatic validation report</a></li>
-    <li><a href="#object-oriented-usage">Object-oriented usage</a></li>
-    <li><a href="#notebooks">Notebooks</a></li>
     <li><a href="#documentation">Documentation</a></li>
   </ul></li>
 </ul>
@@ -57,10 +58,12 @@
                             <li><a href="aule/metrics/earth_observation.html#change_detection_error">change_detection_error</a></li>
                             <li><a href="aule/metrics/classification.html#cohen_kappa">cohen_kappa</a></li>
                             <li><a href="aule/metrics/classification.html#confusion_matrix_metrics">confusion_matrix_metrics</a></li>
+                            <li><a href="aule/metrics/timeseries.html#cross_channel_correlation">cross_channel_correlation</a></li>
                             <li><a href="aule/metrics/ensemble.html#crps">crps</a></li>
                             <li><a href="aule/metrics/ensemble.html#crps_skill_score">crps_skill_score</a></li>
                             <li><a href="aule/metrics/classification.html#dice">dice</a></li>
                             <li><a href="aule/metrics/climate.html#dry_spell_error">dry_spell_error</a></li>
+                            <li><a href="aule/metrics/timeseries.html#dtw_distance">dtw_distance</a></li>
                             <li><a href="aule/metrics/spatial_verification.html#energy_score">energy_score</a></li>
                             <li><a href="aule/metrics/ensemble.html#ensemble_spread">ensemble_spread</a></li>
                             <li><a href="aule/metrics/core.html#explained_variance">explained_variance</a></li>
@@ -71,7 +74,10 @@
                             <li><a href="aule/metrics/spectral.html#gradient_error">gradient_error</a></li>
                             <li><a href="aule/metrics/earth_observation.html#index_error">index_error</a></li>
                             <li><a href="aule/metrics/classification.html#iou">iou</a></li>
+                            <li><a href="aule/_shapes.html#is_degenerate_spatial">is_degenerate_spatial</a></li>
+                            <li><a href="aule/_shapes.html#is_degenerate_temporal">is_degenerate_temporal</a></li>
                             <li><a href="aule/metrics/core.html#kge">kge</a></li>
+                            <li><a href="aule/metrics/timeseries.html#lag_correlation">lag_correlation</a></li>
                             <li><a href="aule/metrics/core.html#mae">mae</a></li>
                             <li><a href="aule/plots/_style.html#make_geo_axis">make_geo_axis</a></li>
                             <li><a href="aule/metrics/core.html#mape">mape</a></li>
@@ -81,6 +87,7 @@
                             <li><a href="aule/metrics/core.html#mse">mse</a></li>
                             <li><a href="aule/metrics/earth_observation.html#normalized_difference_index">normalized_difference_index</a></li>
                             <li><a href="aule/metrics/core.html#nse">nse</a></li>
+                            <li><a href="aule/metrics/timeseries.html#peak_timing_error">peak_timing_error</a></li>
                             <li><a href="aule/metrics/core.html#pearson_r">pearson_r</a></li>
                             <li><a href="aule/metrics/climate.html#percentile_error">percentile_error</a></li>
                             <li><a href="aule/metrics/uncertainty.html#picp">picp</a></li>
@@ -89,14 +96,18 @@
                             <li><a href="aule/plots/spatial.html#plot_bias_map">plot_bias_map</a></li>
                             <li><a href="aule/plots/diagnostics.html#plot_boxplot_comparison">plot_boxplot_comparison</a></li>
                             <li><a href="aule/plots/advanced.html#plot_cdf_comparison">plot_cdf_comparison</a></li>
+                            <li><a href="aule/plots/timeseries.html#plot_channel_correlation_matrix">plot_channel_correlation_matrix</a></li>
                             <li><a href="aule/plots/classification.html#plot_confusion_matrix">plot_confusion_matrix</a></li>
                             <li><a href="aule/plots/spatial.html#plot_correlation_map">plot_correlation_map</a></li>
+                            <li><a href="aule/plots/timeseries.html#plot_dtw_alignment">plot_dtw_alignment</a></li>
                             <li><a href="aule/plots/ensemble.html#plot_ensemble_spread_map">plot_ensemble_spread_map</a></li>
                             <li><a href="aule/plots/core.html#plot_error_histogram">plot_error_histogram</a></li>
                             <li><a href="aule/plots/diagnostics.html#plot_error_map">plot_error_map</a></li>
                             <li><a href="aule/plots/spatial.html#plot_field_comparison">plot_field_comparison</a></li>
                             <li><a href="aule/plots/core.html#plot_histogram_comparison">plot_histogram_comparison</a></li>
                             <li><a href="aule/plots/advanced.html#plot_hovmoller">plot_hovmoller</a></li>
+                            <li><a href="aule/plots/timeseries.html#plot_lag_correlation">plot_lag_correlation</a></li>
+                            <li><a href="aule/plots/timeseries.html#plot_multi_channel_series">plot_multi_channel_series</a></li>
                             <li><a href="aule/plots/core.html#plot_qq">plot_qq</a></li>
                             <li><a href="aule/plots/ensemble.html#plot_rank_histogram">plot_rank_histogram</a></li>
                             <li><a href="aule/plots/classification.html#plot_reliability_diagram">plot_reliability_diagram</a></li>
@@ -115,10 +126,12 @@
                             <li><a href="aule/metrics/core.html#quantile_mapping_bias">quantile_mapping_bias</a></li>
                             <li><a href="aule/metrics/core.html#r2_score">r2_score</a></li>
                             <li><a href="aule/metrics/ensemble.html#rank_histogram">rank_histogram</a></li>
+                            <li><a href="aule/_guards.html#requires">requires</a></li>
                             <li><a href="aule/plots/_style.html#resolve_diverging_norm">resolve_diverging_norm</a></li>
                             <li><a href="aule/metrics/core.html#rmse">rmse</a></li>
                             <li><a href="aule/metrics/climate.html#seasonal_error">seasonal_error</a></li>
                             <li><a href="aule/plots/_style.html#sequential_norm">sequential_norm</a></li>
+                            <li><a href="aule/_logging.html#set_log_level">set_log_level</a></li>
                             <li><a href="aule/metrics/core.html#smape">smape</a></li>
                             <li><a href="aule/metrics/spectral.html#spectral_angle_mapper">spectral_angle_mapper</a></li>
                             <li><a href="aule/metrics/spectral.html#spectral_error">spectral_error</a></li>
@@ -152,115 +165,245 @@ aule    </h1>
 
                         <div class="docstring"><h1 id="aule">aule</h1>
 
-<p><strong>aule</strong> provides validation metrics and plots for machine learning model outputs,
-with a focus on earth observation and climate science use cases (gridded fields,
-ensembles, multi-temporal data).</p>
+<p><strong>Validation metrics and plots for machine learning models</strong>, with a focus on earth observation and climate science.</p>
 
-<p>Named after Aulë, the Vala of craft in Tolkien's mythology — the one who forges
-and evaluates the work of his own hands.</p>
+<p>Named after Aulë, the Vala of craft in Tolkien's mythology.</p>
 
-<h2 id="supported-input-shapes">Supported input shapes</h2>
+<p>📓 <strong>Extensive usage notebooks are available on <a href="https://github.com/alessandrosebastianelli/aule">GitHub</a>.</strong></p>
 
-<p>Every function accepts numpy arrays in one of four shapes:</p>
+<hr />
 
-<ul>
-<li><code>(batch, H, W, C)</code></li>
-<li><code>(batch, H, W, C, T)</code></li>
-<li><code>(H, W, C)</code></li>
-<li><code>(H, W, C, T)</code></li>
-</ul>
-
-<p>When an array is 4D, pass <code>data_format="bhwc"</code> (default) or <code>data_format="hwct"</code>
-to disambiguate, since the two shapes cannot be told apart from shape alone.</p>
-
-<h2 id="installation">Installation</h2>
+<h2 id="install">Install</h2>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>aule
 
-<span class="c1"># with cartopy support for geographic basemaps</span>
+<span class="c1"># optional: geographic basemaps (cartopy)</span>
 pip<span class="w"> </span>install<span class="w"> </span>aule<span class="o">[</span>geo<span class="o">]</span>
+
+<span class="c1"># optional: progress bars on heavy loops (tqdm)</span>
+pip<span class="w"> </span>install<span class="w"> </span>aule<span class="o">[</span>progress<span class="o">]</span>
 </code></pre>
 </div>
 
-<h2 id="quick-example">Quick example</h2>
+<hr />
+
+<h2 id="supported-input-shapes">Supported input shapes</h2>
+
+<p>aule accepts two families of input, both normalised internally to a single canonical <code>(batch, H, W, C, T)</code> representation.</p>
+
+<h3 id="spatial-family">Spatial family</h3>
+
+<table>
+<thead>
+<tr>
+  <th>Shape</th>
+  <th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>(H, W, C)</code></td>
+  <td>single spatial field, one channel</td>
+</tr>
+<tr>
+  <td><code>(H, W, C, T)</code></td>
+  <td>spatial field with time axis — pass <code>data_format="hwct"</code></td>
+</tr>
+<tr>
+  <td><code>(batch, H, W, C)</code></td>
+  <td>batch of spatial fields — pass <code>data_format="bhwc"</code> (default)</td>
+</tr>
+<tr>
+  <td><code>(batch, H, W, C, T)</code></td>
+  <td>full spatio-temporal batch</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="series-family-pure-time-series-no-spatial-extent">Series family (pure time series, no spatial extent)</h3>
+
+<p>Pass the <code>axes</code> keyword to disambiguate:</p>
+
+<table>
+<thead>
+<tr>
+  <th>Shape</th>
+  <th><code>axes</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>(T,)</code></td>
+  <td><code>"t"</code></td>
+</tr>
+<tr>
+  <td><code>(C,)</code></td>
+  <td><code>"c"</code></td>
+</tr>
+<tr>
+  <td><code>(B, T)</code></td>
+  <td><code>"bt"</code></td>
+</tr>
+<tr>
+  <td><code>(C, T)</code></td>
+  <td><code>"ct"</code></td>
+</tr>
+<tr>
+  <td><code>(B, C, T)</code></td>
+  <td><code>"bct"</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Series inputs are promoted to <code>(B, 1, 1, C, T)</code> internally, so every generic metric (RMSE, MAE, Pearson r, …) works directly on them. Functions that genuinely need spatial or temporal extent (SSIM, gradient error, field comparison plots, …) raise a clear error on degenerate inputs; pass <code>force=True</code> to bypass with a warning.</p>
+
+<hr />
+
+<h2 id="quick-start">Quick start</h2>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="aule/metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">rmse</span><span class="p">,</span> <span class="n">mae</span><span class="p">,</span> <span class="n">pearson_r</span><span class="p">,</span> <span class="n">ssim</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">aule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="aule/metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">rmse</span><span class="p">,</span> <span class="n">pearson_r</span><span class="p">,</span> <span class="n">ssim</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn"><a href="aule/plots.html">aule.plots</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_field_comparison</span><span class="p">,</span> <span class="n">plot_scatter</span>
 
-<span class="n">gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1"># ── spatial data ────────────────────────────────────────────────────────────</span>
+<span class="n">gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">pred</span> <span class="o">=</span> <span class="n">gt</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="n">gt</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">pearson_r</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ssim</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">))</span>
 
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plot_field_comparison</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_scatter</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;scatter.png&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plot_field_comparison</span><span class="p">(</span><span class="n">gt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pred</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span>   <span class="o">=</span> <span class="n">plot_scatter</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+
+<span class="c1"># ── pure time series ─────────────────────────────────────────────────────────</span>
+<span class="n">ts_gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>   <span class="c1"># (B=4, C=3, T=200)</span>
+<span class="n">ts_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">ts_gt</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.05</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">ts_gt</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">rmse</span><span class="p">(</span><span class="n">ts_gt</span><span class="p">,</span> <span class="n">ts_pred</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pearson_r</span><span class="p">(</span><span class="n">ts_gt</span><span class="p">,</span> <span class="n">ts_pred</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">))</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="aule/metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">lag_correlation</span><span class="p">,</span> <span class="n">dtw_distance</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="aule/plots.html">aule.plots</a></span><span class="w">  </span><span class="kn">import</span> <span class="n">plot_lag_correlation</span><span class="p">,</span> <span class="n">plot_multi_channel_series</span>
+
+<span class="n">corr</span> <span class="o">=</span> <span class="n">lag_correlation</span><span class="p">(</span><span class="n">ts_gt</span><span class="p">,</span> <span class="n">ts_pred</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>
+<span class="n">dtw</span>  <span class="o">=</span> <span class="n">dtw_distance</span><span class="p">(</span><span class="n">ts_gt</span><span class="p">,</span> <span class="n">ts_pred</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span>  <span class="o">=</span> <span class="n">plot_lag_correlation</span><span class="p">(</span><span class="n">ts_gt</span><span class="p">,</span> <span class="n">ts_pred</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plot_multi_channel_series</span><span class="p">(</span><span class="n">ts_gt</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">,</span>
+                                      <span class="n">channel_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Temp&quot;</span><span class="p">,</span> <span class="s2">&quot;Precip&quot;</span><span class="p">,</span> <span class="s2">&quot;Wind&quot;</span><span class="p">])</span>
 </code></pre>
 </div>
 
-<h2 id="whats-included">What's included</h2>
+<hr />
 
-<p>Metrics are organized by family in <code><a href="aule/metrics.html">aule.metrics</a></code>, all importable directly from <code><a href="aule/metrics.html">aule.metrics</a></code>:</p>
+<h2 id="logging">Logging</h2>
 
-<ul>
-<li><strong>core</strong>: <code>rmse</code>, <code>mse</code>, <code>mae</code>, <code>bias</code>, <code>pearson_r</code>, <code>ssim</code>, <code>psnr</code>, <code>r2_score</code>, <code>mape</code>, <code>smape</code>, <code>nse</code>, <code>kge</code>, <code>max_error</code>, <code>explained_variance</code>, <code>wasserstein_distance</code>, <code>quantile_mapping_bias</code></li>
-<li><strong>spectral</strong>: <code>spectral_error</code>, <code>gradient_error</code>, <code>psd_radial_error</code>, <code>spectral_angle_mapper</code></li>
-<li><strong>climate</strong>: <code>seasonal_error</code>, <code>percentile_error</code>, <code>pixelwise_temporal_correlation</code>, <code>trend_error</code>, <code>extreme_event_duration_error</code>, <code>autocorrelation_error</code>, <code>wet_day_frequency_error</code>, <code>dry_spell_error</code>, <code>anomaly_correlation_coefficient</code></li>
-<li><strong>ensemble</strong>: <code>ensemble_spread</code>, <code>crps</code>, <code>rank_histogram</code>, <code>brier_score</code>, <code>spread_skill_ratio</code>, <code>crps_skill_score</code></li>
-<li><strong>earth_observation</strong>: <code>normalized_difference_index</code>, <code>index_error</code>, <code>change_detection_error</code></li>
-<li><strong>classification</strong>: <code>iou</code>, <code>dice</code>, <code>precision_recall_f1</code>, <code>confusion_matrix_metrics</code>, <code>cohen_kappa</code> (binary or multi-class, via <code>average</code>/<code>num_classes</code>)</li>
-<li><strong>uncertainty</strong>: <code>picp</code>, <code>pit_histogram</code></li>
-<li><strong>spatial_verification</strong>: <code>fractions_skill_score</code> (neighborhood-based, displacement-tolerant), <code>energy_score</code> (multivariate CRPS generalization)</li>
-</ul>
-
-<p>Plots are organized similarly in <code><a href="aule/plots.html">aule.plots</a></code>:</p>
-
-<ul>
-<li><strong>core</strong>: <code>plot_scatter</code>, <code>plot_qq</code>, <code>plot_histogram_comparison</code>, <code>plot_error_histogram</code></li>
-<li><strong>spatial</strong>: <code>plot_field_comparison</code>, <code>plot_bias_map</code>, <code>plot_correlation_map</code> (optional cartopy basemap via <code>lat</code>/<code>lon</code>)</li>
-<li><strong>climate</strong>: <code>plot_temporal_trend</code>, <code>plot_temporal_scatter</code></li>
-<li><strong>ensemble</strong>: <code>plot_ensemble_spread_map</code>, <code>plot_rank_histogram</code></li>
-<li><strong>diagnostics</strong>: <code>plot_taylor_diagram</code>, <code>plot_boxplot_comparison</code>, <code>plot_violin_comparison</code>, <code>plot_time_series</code>, <code>plot_error_map</code></li>
-<li><strong>classification</strong>: <code>plot_confusion_matrix</code>, <code>plot_reliability_diagram</code></li>
-<li><strong>advanced</strong>: <code>plot_hovmoller</code>, <code>plot_cdf_comparison</code>, <code>plot_spectral_density</code>, <code>plot_time_evolution</code></li>
-</ul>
-
-<h2 id="divergent-colormap-normalizations">Divergent colormap normalizations</h2>
-
-<p><code>plot_bias_map</code>, <code>plot_error_map</code> (signed branch), and <code>plot_field_comparison</code>
-(difference panel) expose a <code>norm_type</code> parameter to better highlight extreme
-values on divergent maps, beyond the default <code>"linear"</code> scaling:</p>
-
-<ul>
-<li><code>"power"</code>: power-law compression of the near-zero range (tune via <code>gamma</code>
-in <code>norm_kwargs</code>, default 0.5); a smooth, mild way to make extremes stand
-out more without disturbing background noise.</li>
-<li><code>"symlog"</code>: linear near zero (within <code>linthresh</code>), logarithmic beyond it;
-the strongest extreme-value contrast, at the cost of making near-threshold
-noise visible as speckle.</li>
-<li><code>"twoslope"</code>: anchors a (possibly off-zero) <code>vcenter</code> to the colormap
-midpoint, for data that isn't symmetric around zero.</li>
-</ul>
+<p>aule is silent by default. Enable structured, coloured log output with a single call:</p>
 
 <div class="pdoc-code codehilite">
-<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn"><a href="aule/plots.html">aule.plots</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_bias_map</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_bias_map</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">norm_type</span><span class="o">=</span><span class="s2">&quot;symlog&quot;</span><span class="p">,</span> <span class="n">norm_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;linthresh&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">})</span>
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">aule</span>
+<span class="n">aule</span><span class="o">.</span><span class="n">set_log_level</span><span class="p">(</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span>   <span class="c1"># DEBUG | INFO | WARNING | ERROR</span>
+<span class="c1"># or via environment variable before importing:</span>
+<span class="c1"># AULE_LOG_LEVEL=INFO python my_script.py</span>
 </code></pre>
 </div>
 
-<p>The underlying normalization builders (<code>power_norm</code>, <code>symlog_norm</code>,
-<code>asymmetric_twoslope_norm</code>, and the <code>resolve_diverging_norm</code> dispatcher) are
-available directly from <code><a href="aule/plots/_style.html">aule.plots._style</a></code> for custom plots.</p>
+<hr />
+
+<h2 id="metrics">Metrics</h2>
+
+<p>All importable directly from <code><a href="aule/metrics.html">aule.metrics</a></code>.</p>
+
+<p><strong>Core</strong> — <code>rmse</code>, <code>mse</code>, <code>mae</code>, <code>bias</code>, <code>pearson_r</code>, <code>ssim</code>, <code>psnr</code>, <code>r2_score</code>, <code>mape</code>, <code>smape</code>, <code>nse</code>, <code>kge</code>, <code>max_error</code>, <code>explained_variance</code>, <code>wasserstein_distance</code>, <code>quantile_mapping_bias</code></p>
+
+<p><strong>Spectral / gradient</strong> — <code>spectral_error</code>, <code>gradient_error</code>, <code>psd_radial_error</code>, <code>spectral_angle_mapper</code></p>
+
+<p><strong>Climate</strong> — <code>seasonal_error</code>, <code>percentile_error</code>, <code>pixelwise_temporal_correlation</code>, <code>trend_error</code>, <code>extreme_event_duration_error</code>, <code>autocorrelation_error</code>, <code>wet_day_frequency_error</code>, <code>dry_spell_error</code>, <code>anomaly_correlation_coefficient</code></p>
+
+<p><strong>Ensemble</strong> — <code>ensemble_spread</code>, <code>crps</code>, <code>rank_histogram</code>, <code>brier_score</code>, <code>spread_skill_ratio</code>, <code>crps_skill_score</code></p>
+
+<p><strong>Earth observation</strong> — <code>normalized_difference_index</code>, <code>index_error</code>, <code>change_detection_error</code></p>
+
+<p><strong>Classification / segmentation</strong> — <code>iou</code>, <code>dice</code>, <code>precision_recall_f1</code>, <code>confusion_matrix_metrics</code>, <code>cohen_kappa</code></p>
+
+<p><strong>Uncertainty</strong> — <code>picp</code>, <code>pit_histogram</code></p>
+
+<p><strong>Spatial verification</strong> — <code>fractions_skill_score</code> (FSS), <code>energy_score</code></p>
+
+<p><strong>Time series</strong> — <code>lag_correlation</code>, <code>cross_channel_correlation</code>, <code>peak_timing_error</code>, <code>dtw_distance</code></p>
+
+<hr />
+
+<h2 id="plots">Plots</h2>
+
+<p>All importable directly from <code><a href="aule/plots.html">aule.plots</a></code>.</p>
+
+<p><strong>Core</strong> — <code>plot_scatter</code>, <code>plot_qq</code>, <code>plot_histogram_comparison</code>, <code>plot_error_histogram</code></p>
+
+<p><strong>Spatial</strong> — <code>plot_field_comparison</code>, <code>plot_bias_map</code>, <code>plot_correlation_map</code></p>
+
+<p><strong>Climate</strong> — <code>plot_temporal_trend</code>, <code>plot_temporal_scatter</code></p>
+
+<p><strong>Ensemble</strong> — <code>plot_ensemble_spread_map</code>, <code>plot_rank_histogram</code></p>
+
+<p><strong>Diagnostics</strong> — <code>plot_taylor_diagram</code>, <code>plot_boxplot_comparison</code>, <code>plot_violin_comparison</code>, <code>plot_time_series</code>, <code>plot_error_map</code></p>
+
+<p><strong>Classification</strong> — <code>plot_confusion_matrix</code>, <code>plot_reliability_diagram</code></p>
+
+<p><strong>Advanced</strong> — <code>plot_hovmoller</code>, <code>plot_cdf_comparison</code>, <code>plot_spectral_density</code>, <code>plot_time_evolution</code></p>
+
+<p><strong>Time series</strong> — <code>plot_lag_correlation</code>, <code>plot_multi_channel_series</code>, <code>plot_dtw_alignment</code>, <code>plot_channel_correlation_matrix</code></p>
+
+<p>Spatial plots accept optional <code>lat</code>/<code>lon</code> arrays for a cartopy basemap (requires <code>aule[geo]</code>). Every plot returns <code>(fig, ax)</code> and accepts an optional <code>save_path</code>.</p>
+
+<h3 id="divergent-colormap-normalizations">Divergent colormap normalizations</h3>
+
+<p><code>plot_bias_map</code>, <code>plot_error_map</code>, and <code>plot_field_comparison</code> accept <code>norm_type</code> to control how extreme values stand out:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_bias_map</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">norm_type</span><span class="o">=</span><span class="s2">&quot;symlog&quot;</span><span class="p">,</span> <span class="n">norm_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;linthresh&quot;</span><span class="p">:</span> <span class="mf">0.02</span><span class="p">})</span>
+<span class="c1"># norm_type options: &quot;linear&quot; (default) | &quot;power&quot; | &quot;symlog&quot; | &quot;twoslope&quot;</span>
+</code></pre>
+</div>
+
+<hr />
+
+<h2 id="shape-guardrails">Shape guardrails</h2>
+
+<p>Functions that require genuine spatial or temporal extent declare this explicitly. Passing a degenerate input raises a descriptive error:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="n">series_gt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>   <span class="c1"># H=W=1 — no real spatial extent</span>
+<span class="n">ssim</span><span class="p">(</span><span class="n">series_gt</span><span class="p">,</span> <span class="n">series_gt</span><span class="p">)</span>              <span class="c1"># raises ValueError with a clear message</span>
+
+<span class="n">ssim</span><span class="p">(</span><span class="n">series_gt</span><span class="p">,</span> <span class="n">series_gt</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># proceeds anyway with a warning</span>
+</code></pre>
+</div>
+
+<hr />
+
+<h2 id="object-oriented-api">Object-oriented API</h2>
+
+<p>Bind arrays once, call everything as a method — including all new functions:</p>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">aule</span><span class="w"> </span><span class="kn">import</span> <span class="n">aule</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">aule</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">rmse</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">pearson_r</span><span class="p">())</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">plot_bias_map</span><span class="p">(</span><span class="n">norm_type</span><span class="o">=</span><span class="s2">&quot;power&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<hr />
 
 <h2 id="automatic-validation-report">Automatic validation report</h2>
-
-<p><code><a href="aule/report.html#generate_report">aule.report.generate_report</a></code> runs a curated set of metrics and plots and assembles
-them into a single self-contained HTML file (no external assets, figures embedded
-as base64 PNGs):</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn"><a href="aule/report.html">aule.report</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_report</span>
@@ -269,49 +412,18 @@ as base64 PNGs):</p>
 </code></pre>
 </div>
 
-<h2 id="object-oriented-usage">Object-oriented usage</h2>
+<p>Produces a self-contained HTML file (figures embedded as base64 PNGs) with a metrics table and all key plots.</p>
 
-<p>Every metric and plot is also available as a method on the <code><a href="">aule</a></code> class,
-which binds <code>y_true</code>/<code>y_pred</code> (and optionally <code>data_format</code>/<code>ignore_nan</code>)
-once. New functions added to <code><a href="aule/metrics.html">aule.metrics</a></code> or <code><a href="aule/plots.html">aule.plots</a></code> are picked up
-automatically, no extra wiring needed.</p>
-
-<div class="pdoc-code codehilite">
-<pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">aule</span><span class="w"> </span><span class="kn">import</span> <span class="n">aule</span>
-
-<span class="n">v</span> <span class="o">=</span> <span class="n">aule</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">rmse</span><span class="p">())</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">pearson_r</span><span class="p">())</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">plot_scatter</span><span class="p">(</span><span class="n">save_path</span><span class="o">=</span><span class="s2">&quot;scatter.png&quot;</span><span class="p">)</span>
-</code></pre>
-</div>
-
-<h2 id="notebooks">Notebooks</h2>
-
-<p>The <code>notebooks/</code> folder contains worked examples for every metric and plot
-family, each runnable end-to-end:</p>
-
-<ol>
-<li><code>01_core_metrics.ipynb</code></li>
-<li><code>02_spectral_and_earth_observation_metrics.ipynb</code></li>
-<li><code>03_climate_metrics.ipynb</code></li>
-<li><code>04_ensemble_and_uncertainty_metrics.ipynb</code></li>
-<li><code>05_classification_metrics.ipynb</code></li>
-<li><code>06_plots.ipynb</code></li>
-<li><code>07_aule_class.ipynb</code></li>
-<li><code>08_spatial_verification_and_advanced_plots.ipynb</code></li>
-<li><code>09_validation_report.ipynb</code></li>
-<li><code>10_color_normalization.ipynb</code></li>
-</ol>
+<hr />
 
 <h2 id="documentation">Documentation</h2>
-
-<p>The documentation is produced using <a href="https://pdoc.dev">pdoc</a>.</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code>python<span class="w"> </span>build_doc.py
 </code></pre>
 </div>
+
+<p>Documentation is built with <a href="https://pdoc.dev">pdoc</a>.</p>
 </div>
 
                         <input id="mod-aule-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
@@ -322,12 +434,13 @@ family, each runnable end-to-end:</p>
 </span><span id="L-2"><a href="#L-2"><span class="linenos"> 2</span></a><span class="sd">   .. include:: ../README.md</span>
 </span><span id="L-3"><a href="#L-3"><span class="linenos"> 3</span></a><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="L-4"><a href="#L-4"><span class="linenos"> 4</span></a>
-</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.3&quot;</span>
+</span><span id="L-5"><a href="#L-5"><span class="linenos"> 5</span></a><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.0.4&quot;</span>
 </span><span id="L-6"><a href="#L-6"><span class="linenos"> 6</span></a>
 </span><span id="L-7"><a href="#L-7"><span class="linenos"> 7</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 </span><span id="L-8"><a href="#L-8"><span class="linenos"> 8</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.plots</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 </span><span id="L-9"><a href="#L-9"><span class="linenos"> 9</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">._validator</span><span class="w"> </span><span class="kn">import</span> <span class="n">aule</span>
 </span><span id="L-10"><a href="#L-10"><span class="linenos">10</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.report</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_report</span>
+</span><span id="L-11"><a href="#L-11"><span class="linenos">11</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">._logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">set_log_level</span>
 </span></pre></div>
 
 

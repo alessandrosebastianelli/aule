@@ -59,6 +59,9 @@
                                 <a class="function" href="#aule.confusion_matrix_metrics">confusion_matrix_metrics</a>
                         </li>
                         <li>
+                                <a class="function" href="#aule.cross_channel_correlation">cross_channel_correlation</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#aule.crps">crps</a>
                         </li>
                         <li>
@@ -69,6 +72,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#aule.dry_spell_error">dry_spell_error</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#aule.dtw_distance">dtw_distance</a>
                         </li>
                         <li>
                                 <a class="function" href="#aule.energy_score">energy_score</a>
@@ -98,6 +104,9 @@
                                 <a class="function" href="#aule.kge">kge</a>
                         </li>
                         <li>
+                                <a class="function" href="#aule.lag_correlation">lag_correlation</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#aule.mae">mae</a>
                         </li>
                         <li>
@@ -114,6 +123,9 @@
                         </li>
                         <li>
                                 <a class="function" href="#aule.nse">nse</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#aule.peak_timing_error">peak_timing_error</a>
                         </li>
                         <li>
                                 <a class="function" href="#aule.pearson_r">pearson_r</a>
@@ -188,10 +200,16 @@
                                 <a class="function" href="#aule.plot_cdf_comparison">plot_cdf_comparison</a>
                         </li>
                         <li>
+                                <a class="function" href="#aule.plot_channel_correlation_matrix">plot_channel_correlation_matrix</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#aule.plot_confusion_matrix">plot_confusion_matrix</a>
                         </li>
                         <li>
                                 <a class="function" href="#aule.plot_correlation_map">plot_correlation_map</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#aule.plot_dtw_alignment">plot_dtw_alignment</a>
                         </li>
                         <li>
                                 <a class="function" href="#aule.plot_ensemble_spread_map">plot_ensemble_spread_map</a>
@@ -210,6 +228,12 @@
                         </li>
                         <li>
                                 <a class="function" href="#aule.plot_hovmoller">plot_hovmoller</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#aule.plot_lag_correlation">plot_lag_correlation</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#aule.plot_multi_channel_series">plot_multi_channel_series</a>
                         </li>
                         <li>
                                 <a class="function" href="#aule.plot_qq">plot_qq</a>
@@ -671,7 +695,7 @@ model correctly predicts the sign and magnitude of anomalies.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">autocorrelation_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">max_lag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">autocorrelation_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">max_lag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.autocorrelation_error-view-source"><span>View Source</span></label>
 
@@ -736,7 +760,7 @@ Mean absolute error between the two ACFs over lags 1..max_lag. Lower is better.<
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">bias</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">bias</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.bias-view-source"><span>View Source</span></label>
 
@@ -858,7 +882,7 @@ Brier score in [0, 1]. Lower is better (0 = perfect probabilistic forecast).</li
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">change_detection_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">change_detection_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.change_detection_error-view-source"><span>View Source</span></label>
 
@@ -1032,6 +1056,67 @@ Dictionary with keys "accuracy", "specificity", "balanced_accuracy",
 <span class="n">gt</span>   <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 <span class="n">pred</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
 <span class="n">metrics</span> <span class="o">=</span> <span class="n">confusion_matrix_metrics</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+
+
+                            </div>
+                            <div id="aule.cross_channel_correlation" class="classattr">
+                                        <input id="aule.cross_channel_correlation-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">cross_channel_correlation</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
+
+                <label class="view-source-button" for="aule.cross_channel_correlation-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#aule.cross_channel_correlation"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="aule.cross_channel_correlation-86"><a href="#aule.cross_channel_correlation-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="aule.cross_channel_correlation-87"><a href="#aule.cross_channel_correlation-87"><span class="linenos">87</span></a>        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">auto_params</span><span class="p">:</span>
+</span><span id="aule.cross_channel_correlation-88"><a href="#aule.cross_channel_correlation-88"><span class="linenos">88</span></a>            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="aule.cross_channel_correlation-89"><a href="#aule.cross_channel_correlation-89"><span class="linenos">89</span></a>                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="aule.cross_channel_correlation-90"><a href="#aule.cross_channel_correlation-90"><span class="linenos">90</span></a>                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ignore_nan&quot;</span><span class="p">,):</span>
+</span><span id="aule.cross_channel_correlation-91"><a href="#aule.cross_channel_correlation-91"><span class="linenos">91</span></a>                    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="aule.cross_channel_correlation-92"><a href="#aule.cross_channel_correlation-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Computes the Pearson correlation matrix between channels (C×C),
+treating time/batch as the sample dimension.  Useful for comparing
+multi-variable series (e.g. different meteorological stations or
+sensor bands) to see whether a model reproduces the inter-variable
+structure.</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>data : np.ndarray
+Input array, any spatial or series shape.</li>
+<li>data_format : str
+"bhwc" or "hwct" for 4D spatial inputs.</li>
+<li>axes : str
+One of "t", "c", "bt", "ct", "bct" for series inputs.</li>
+<li>ignore_nan : bool
+If True, NaN values are excluded (default: False).</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>corr_matrix : np.ndarray
+Square matrix of shape (C, C) with Pearson correlation values.</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">cross_channel_correlation</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>  <span class="c1"># (B, C=5, T=100)</span>
+<span class="n">corr</span> <span class="o">=</span> <span class="n">cross_channel_correlation</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>  <span class="c1"># (5, 5)</span>
 </code></pre>
 </div>
 </div>
@@ -1242,7 +1327,7 @@ masks are empty (no foreground in either).</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">dry_spell_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">dry_spell_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.dry_spell_error-view-source"><span>View Source</span></label>
 
@@ -1280,6 +1365,9 @@ Value below which a time step counts as "dry" (default: 1.0).</li>
 "hwct" here, since a time axis is required.</li>
 <li>ignore_nan : bool
 If True, non-finite values are excluded from the spatial means (default: False).</li>
+<li>force : bool
+Forwarded to <code><a href="#aule.extreme_event_duration_error">extreme_event_duration_error</a></code>, which requires
+genuine temporal extent (T>1); see its docstring (default: False).</li>
 </ul>
 
 <h2 id="returns">Returns:</h2>
@@ -1299,6 +1387,83 @@ Returns 0.0 if neither series has any qualifying dry spell.</li>
 <span class="n">gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">exponential</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">60</span><span class="p">))</span>
 <span class="n">pred</span> <span class="o">=</span> <span class="n">gt</span> <span class="o">*</span> <span class="mf">1.1</span>
 <span class="n">score</span> <span class="o">=</span> <span class="n">dry_spell_error</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;hwct&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+
+
+                            </div>
+                            <div id="aule.dtw_distance" class="classattr">
+                                        <input id="aule.dtw_distance-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">dtw_distance</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+
+                <label class="view-source-button" for="aule.dtw_distance-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#aule.dtw_distance"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="aule.dtw_distance-86"><a href="#aule.dtw_distance-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="aule.dtw_distance-87"><a href="#aule.dtw_distance-87"><span class="linenos">87</span></a>        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">auto_params</span><span class="p">:</span>
+</span><span id="aule.dtw_distance-88"><a href="#aule.dtw_distance-88"><span class="linenos">88</span></a>            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="aule.dtw_distance-89"><a href="#aule.dtw_distance-89"><span class="linenos">89</span></a>                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="aule.dtw_distance-90"><a href="#aule.dtw_distance-90"><span class="linenos">90</span></a>                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ignore_nan&quot;</span><span class="p">,):</span>
+</span><span id="aule.dtw_distance-91"><a href="#aule.dtw_distance-91"><span class="linenos">91</span></a>                    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="aule.dtw_distance-92"><a href="#aule.dtw_distance-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Computes the Dynamic Time Warping (DTW) distance between ground
+truth and prediction, averaged over batch and channel.  DTW finds
+the minimum-cost alignment between two time series by allowing
+non-linear warping of the time axis, making it much more tolerant
+of temporal shifts and distortions than direct pointwise error
+metrics like RMSE.  It is the right choice when you care about
+shape similarity rather than exact time registration.</p>
+
+<p>Uses the O(N*M) standard DTW algorithm with an optional Sakoe-Chiba
+band constraint (<code>window</code>) to limit the warping path to a diagonal
+corridor, reducing both computation cost and overly flexible
+alignments for long series.</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>y_true : np.ndarray
+Ground truth, any spatial or series shape.</li>
+<li>y_pred : np.ndarray
+Prediction, same shape as y_true.</li>
+<li>data_format : str
+"bhwc" or "hwct" for 4D spatial inputs.</li>
+<li>axes : str
+One of "t", "c", "bt", "ct", "bct" for series inputs.</li>
+<li>ignore_nan : bool
+If True, NaN values are replaced with linear interpolation
+before computing DTW (default: False).</li>
+<li>window : int
+Sakoe-Chiba band width (max allowed time-warp steps). If None
+(default), no band constraint is applied (full DTW).</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>value : float
+Mean DTW distance over batch/channel. Lower is better (0 means
+identical time series up to allowed warping).</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">dtw_distance</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mf">1.1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>   <span class="c1"># slightly different frequency</span>
+<span class="n">dist</span> <span class="o">=</span> <span class="n">dtw_distance</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>
 </code></pre>
 </div>
 </div>
@@ -1433,7 +1598,7 @@ higher forecast uncertainty.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">explained_variance</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">explained_variance</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.explained_variance-view-source"><span>View Source</span></label>
 
@@ -1493,7 +1658,7 @@ Explained variance score. 1.0 is a perfect fit.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">extreme_event_duration_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">above</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">extreme_event_duration_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">above</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.extreme_event_duration_error-view-source"><span>View Source</span></label>
 
@@ -1562,7 +1727,7 @@ Returns 0.0 if neither series has any qualifying event.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">fractions_skill_score</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">fractions_skill_score</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span>,</span><span class="param">	<span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.fractions_skill_score-view-source"><span>View Source</span></label>
 
@@ -1635,7 +1800,7 @@ relative to a uniform-probability forecast.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">gradient_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">norm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;l1&#39;</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">gradient_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">norm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;l1&#39;</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.gradient_error-view-source"><span>View Source</span></label>
 
@@ -1834,7 +1999,7 @@ masks are empty (no foreground in either).</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">kge</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
+        <span class="name">kge</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
 
                 <label class="view-source-button" for="aule.kge-view-source"><span>View Source</span></label>
 
@@ -1893,12 +2058,88 @@ Dictionary with keys "kge" (overall score, 1.0 is perfect),
 
 
                             </div>
+                            <div id="aule.lag_correlation" class="classattr">
+                                        <input id="aule.lag_correlation-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">lag_correlation</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">max_lag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>:</span></span>
+
+                <label class="view-source-button" for="aule.lag_correlation-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#aule.lag_correlation"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="aule.lag_correlation-86"><a href="#aule.lag_correlation-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="aule.lag_correlation-87"><a href="#aule.lag_correlation-87"><span class="linenos">87</span></a>        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">auto_params</span><span class="p">:</span>
+</span><span id="aule.lag_correlation-88"><a href="#aule.lag_correlation-88"><span class="linenos">88</span></a>            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="aule.lag_correlation-89"><a href="#aule.lag_correlation-89"><span class="linenos">89</span></a>                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="aule.lag_correlation-90"><a href="#aule.lag_correlation-90"><span class="linenos">90</span></a>                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ignore_nan&quot;</span><span class="p">,):</span>
+</span><span id="aule.lag_correlation-91"><a href="#aule.lag_correlation-91"><span class="linenos">91</span></a>                    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="aule.lag_correlation-92"><a href="#aule.lag_correlation-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Computes the cross-correlation between ground truth and prediction
+at lags -max_lag … +max_lag, averaged over batch and channel.</p>
+
+<p>A positive lag L means the prediction leads the ground truth by L
+steps (prediction anticipates the signal); a negative lag means it
+lags behind. The lag at which the cross-correlation peaks tells you
+by how many time steps a model is ahead or behind the true signal.</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>y_true : np.ndarray
+Ground truth, any spatial or series shape.</li>
+<li>y_pred : np.ndarray
+Prediction, same shape as y_true.</li>
+<li>max_lag : int
+Maximum absolute lag to compute, in time steps (default: 20).</li>
+<li>data_format : str
+"bhwc" or "hwct" for 4D spatial inputs (see <code>to_canonical</code>).</li>
+<li>axes : str
+One of "t", "c", "bt", "ct", "bct" for series inputs.</li>
+<li>ignore_nan : bool
+If True, NaN values are excluded before computing correlations (default: False).</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>corr : np.ndarray
+1D array of length 2*max_lag+1 with cross-correlation values at
+lags [-max_lag, ..., 0, ..., +max_lag].</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">lag_correlation</span>
+
+<span class="c1"># pure time series (B, C, T)</span>
+<span class="n">gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">gt</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">corr</span> <span class="o">=</span> <span class="n">lag_correlation</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>
+<span class="c1"># peak should be near lag=+3 (prediction leads by 3 steps)</span>
+
+<span class="c1"># or spatial data</span>
+<span class="n">gt2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">pred2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">gt2</span><span class="p">,</span> <span class="n">shift</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">corr2</span> <span class="o">=</span> <span class="n">lag_correlation</span><span class="p">(</span><span class="n">gt2</span><span class="p">,</span> <span class="n">pred2</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+
+
+                            </div>
                             <div id="aule.mae" class="classattr">
                                         <input id="aule.mae-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">mae</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">mae</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.mae-view-source"><span>View Source</span></label>
 
@@ -1956,7 +2197,7 @@ MAE value, lower is better.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">mape</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-08</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">mape</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-08</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.mape-view-source"><span>View Source</span></label>
 
@@ -2018,7 +2259,7 @@ MAPE, expressed as a percentage (e.g. 5.0 means 5%). Lower is better.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">max_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">max_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.max_error-view-source"><span>View Source</span></label>
 
@@ -2076,7 +2317,7 @@ Maximum absolute error. Lower is better.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">mse</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">mse</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.mse-view-source"><span>View Source</span></label>
 
@@ -2196,7 +2437,7 @@ with values in [-1, 1].</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">nse</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">nse</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.nse-view-source"><span>View Source</span></label>
 
@@ -2252,12 +2493,78 @@ negative values mean worse than the mean.</li>
 
 
                             </div>
+                            <div id="aule.peak_timing_error" class="classattr">
+                                        <input id="aule.peak_timing_error-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">peak_timing_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+
+                <label class="view-source-button" for="aule.peak_timing_error-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#aule.peak_timing_error"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="aule.peak_timing_error-86"><a href="#aule.peak_timing_error-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="aule.peak_timing_error-87"><a href="#aule.peak_timing_error-87"><span class="linenos">87</span></a>        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">auto_params</span><span class="p">:</span>
+</span><span id="aule.peak_timing_error-88"><a href="#aule.peak_timing_error-88"><span class="linenos">88</span></a>            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="aule.peak_timing_error-89"><a href="#aule.peak_timing_error-89"><span class="linenos">89</span></a>                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="aule.peak_timing_error-90"><a href="#aule.peak_timing_error-90"><span class="linenos">90</span></a>                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ignore_nan&quot;</span><span class="p">,):</span>
+</span><span id="aule.peak_timing_error-91"><a href="#aule.peak_timing_error-91"><span class="linenos">91</span></a>                    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="aule.peak_timing_error-92"><a href="#aule.peak_timing_error-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Computes the mean absolute difference in peak location (time step
+with the maximum value) between ground truth and prediction, averaged
+over batch and channel.  Useful for evaluating event-timing accuracy:
+does the model predict floods, heatwaves, or emission peaks at the
+right time, even if the amplitude is close?</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>y_true : np.ndarray
+Ground truth, any spatial or series shape.</li>
+<li>y_pred : np.ndarray
+Prediction, same shape as y_true.</li>
+<li>data_format : str
+"bhwc" or "hwct" for 4D spatial inputs.</li>
+<li>axes : str
+One of "t", "c", "bt", "ct", "bct" for series inputs.</li>
+<li>ignore_nan : bool
+If True, NaN values are excluded before argmax (default: False).</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>value : float
+Mean absolute difference in peak time step. Lower is better
+(0 means the model always peaks at the exact right time step).</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="metrics.html">aule.metrics</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">peak_timing_error</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>   <span class="c1"># (B=1, C=1, T=200)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="mf">0.3</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>  <span class="c1"># shifted by ~10 steps</span>
+<span class="n">err</span>  <span class="o">=</span> <span class="n">peak_timing_error</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>  <span class="c1"># ~10</span>
+</code></pre>
+</div>
+</div>
+
+
+                            </div>
                             <div id="aule.pearson_r" class="classattr">
                                         <input id="aule.pearson_r-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">pearson_r</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">pearson_r</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.pearson_r-view-source"><span>View Source</span></label>
 
@@ -2644,7 +2951,7 @@ Dictionary with keys "precision", "recall", "f1", each in [0, 1].</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">psd_radial_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">psd_radial_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.psd_radial_error-view-source"><span>View Source</span></label>
 
@@ -2707,7 +3014,7 @@ Mean L1 distance between radially-averaged power spectra. Lower is better.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">psnr</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_range</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">psnr</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_range</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.psnr-view-source"><span>View Source</span></label>
 
@@ -2770,7 +3077,7 @@ PSNR in dB. Higher is better. Returns +inf when prediction is exact.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">quantile_mapping_bias</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">n_quantiles</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">quantile_mapping_bias</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">n_quantiles</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.quantile_mapping_bias-view-source"><span>View Source</span></label>
 
@@ -2837,7 +3144,7 @@ the two distributions match at every quantile evaluated).</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">r2_score</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">r2_score</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.r2_score-view-source"><span>View Source</span></label>
 
@@ -2961,7 +3268,7 @@ falling into each rank bin.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">rmse</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">rmse</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.rmse-view-source"><span>View Source</span></label>
 
@@ -3080,7 +3387,7 @@ MSE between spatial-mean time series. Lower is better.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">smape</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-08</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">smape</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">eps</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-08</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.smape-view-source"><span>View Source</span></label>
 
@@ -3206,7 +3513,7 @@ Mean spectral angle in degrees, in [0, 180]. Lower is better
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">spectral_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">spectral_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.spectral_error-view-source"><span>View Source</span></label>
 
@@ -3330,7 +3637,7 @@ Spread/skill ratio. 1.0 indicates good calibration.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">ssim</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">window_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">11</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">ssim</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">window_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">11</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.ssim-view-source"><span>View Source</span></label>
 
@@ -3363,6 +3670,12 @@ If True, non-finite values are filled with the per-sample
 finite median before computing SSIM (default: False).</li>
 <li>window_size : int
 Side length of the Gaussian window used for local statistics (default: 11).</li>
+<li>force : bool
+SSIM requires genuine spatial extent (H>1 or W>1); by default,
+a degenerate input (e.g. a pure time series promoted via
+<code>axes=...</code>, with H=W=1) raises a clear error. Pass <code>force=True</code>
+to proceed anyway (the result will be meaningless, since a
+1x1 "image" has no local structure to compare) (default: False).</li>
 </ul>
 
 <h2 id="returns">Returns:</h2>
@@ -3392,7 +3705,7 @@ Mean SSIM over batch, channel and time. In [-1, 1], higher is better.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">trend_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">trend_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.trend_error-view-source"><span>View Source</span></label>
 
@@ -3426,6 +3739,12 @@ Prediction array, same shape as y_true.</li>
 "hwct" here, since a time axis is required.</li>
 <li>ignore_nan : bool
 If True, non-finite values are excluded from the spatial means (default: False).</li>
+<li>force : bool
+trend_error requires genuine temporal extent (T>1); by default
+a degenerate input raises a clear error. <code>force=True</code> only
+bypasses this initial check - it cannot make a trend
+computable from a single time step (T=1 has no slope to fit),
+so the underlying T>=2 requirement still applies regardless (default: False).</li>
 </ul>
 
 <h2 id="returns">Returns:</h2>
@@ -3456,7 +3775,7 @@ Absolute difference between the two trend slopes (units per time step).</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">wasserstein_distance</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">wasserstein_distance</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.wasserstein_distance-view-source"><span>View Source</span></label>
 
@@ -3521,7 +3840,7 @@ Wasserstein distance, in the same units as the data. Lower is better
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">wet_day_frequency_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
+        <span class="name">wet_day_frequency_error</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="nb">float</span>:</span></span>
 
                 <label class="view-source-button" for="aule.wet_day_frequency_error-view-source"><span>View Source</span></label>
 
@@ -3587,7 +3906,7 @@ Absolute difference in wet-day frequency, in [0, 1]. Lower is better.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">plot_bias_map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">lat</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">lon</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">norm_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span>,</span><span class="param">	<span class="n">norm_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Spatial bias map&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
+        <span class="name">plot_bias_map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">lat</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">lon</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">norm_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span>,</span><span class="param">	<span class="n">norm_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Spatial bias map&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="aule.plot_bias_map-view-source"><span>View Source</span></label>
 
@@ -3799,6 +4118,74 @@ The matplotlib figure and axis, for further customization.</li>
 
 
                             </div>
+                            <div id="aule.plot_channel_correlation_matrix" class="classattr">
+                                        <input id="aule.plot_channel_correlation_matrix-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">plot_channel_correlation_matrix</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">channel_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Inter-channel correlation&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="aule.plot_channel_correlation_matrix-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#aule.plot_channel_correlation_matrix"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="aule.plot_channel_correlation_matrix-86"><a href="#aule.plot_channel_correlation_matrix-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="aule.plot_channel_correlation_matrix-87"><a href="#aule.plot_channel_correlation_matrix-87"><span class="linenos">87</span></a>        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">auto_params</span><span class="p">:</span>
+</span><span id="aule.plot_channel_correlation_matrix-88"><a href="#aule.plot_channel_correlation_matrix-88"><span class="linenos">88</span></a>            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="aule.plot_channel_correlation_matrix-89"><a href="#aule.plot_channel_correlation_matrix-89"><span class="linenos">89</span></a>                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="aule.plot_channel_correlation_matrix-90"><a href="#aule.plot_channel_correlation_matrix-90"><span class="linenos">90</span></a>                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ignore_nan&quot;</span><span class="p">,):</span>
+</span><span id="aule.plot_channel_correlation_matrix-91"><a href="#aule.plot_channel_correlation_matrix-91"><span class="linenos">91</span></a>                    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="aule.plot_channel_correlation_matrix-92"><a href="#aule.plot_channel_correlation_matrix-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Plots the inter-channel correlation matrix as an annotated heatmap.
+Shows how strongly correlated pairs of channels/variables are across
+time and batch, which is useful for comparing whether a model
+preserves multi-variable dependencies.</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>data : np.ndarray
+Input array, any spatial or series shape.</li>
+<li>channel_names : sequence of str
+Optional labels for each axis tick.</li>
+<li>data_format : str
+"bhwc" or "hwct" for 4D spatial inputs.</li>
+<li>axes : str
+One of "t", "c", "bt", "ct", "bct" for series inputs.</li>
+<li>ignore_nan : bool
+If True, NaN values are excluded (default: False).</li>
+<li>title : str
+Plot title.</li>
+<li>save_path : str
+If given, saves the figure to this path.</li>
+<li>ax : matplotlib.axes.Axes
+Existing axis to draw on.</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>(fig, ax) : tuple</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="plots.html">aule.plots</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_channel_correlation_matrix</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_channel_correlation_matrix</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">,</span>
+                                           <span class="n">channel_names</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="s2">&quot;ABCDE&quot;</span><span class="p">))</span>
+</code></pre>
+</div>
+</div>
+
+
+                            </div>
                             <div id="aule.plot_confusion_matrix" class="classattr">
                                         <input id="aule.plot_confusion_matrix-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -3936,12 +4323,82 @@ The matplotlib figure and axis, for further customization.</li>
 
 
                             </div>
+                            <div id="aule.plot_dtw_alignment" class="classattr">
+                                        <input id="aule.plot_dtw_alignment-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">plot_dtw_alignment</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;DTW alignment&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="aule.plot_dtw_alignment-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#aule.plot_dtw_alignment"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="aule.plot_dtw_alignment-86"><a href="#aule.plot_dtw_alignment-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="aule.plot_dtw_alignment-87"><a href="#aule.plot_dtw_alignment-87"><span class="linenos">87</span></a>        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">auto_params</span><span class="p">:</span>
+</span><span id="aule.plot_dtw_alignment-88"><a href="#aule.plot_dtw_alignment-88"><span class="linenos">88</span></a>            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="aule.plot_dtw_alignment-89"><a href="#aule.plot_dtw_alignment-89"><span class="linenos">89</span></a>                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="aule.plot_dtw_alignment-90"><a href="#aule.plot_dtw_alignment-90"><span class="linenos">90</span></a>                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ignore_nan&quot;</span><span class="p">,):</span>
+</span><span id="aule.plot_dtw_alignment-91"><a href="#aule.plot_dtw_alignment-91"><span class="linenos">91</span></a>                    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="aule.plot_dtw_alignment-92"><a href="#aule.plot_dtw_alignment-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Plots the DTW alignment between ground truth and prediction for one
+(batch, channel) pair.  Left panel: the cost matrix with the
+optimal warping path overlaid.  Right panel: both series with
+alignment lines connecting matched time steps.</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>y_true : np.ndarray
+Ground truth, any spatial or series shape.</li>
+<li>y_pred : np.ndarray
+Prediction, same shape as y_true.</li>
+<li>batch_index, channel_index : int
+Which (batch, channel) slice to visualise.</li>
+<li>data_format : str
+"bhwc" or "hwct" for 4D spatial inputs.</li>
+<li>axes : str
+One of "t", "c", "bt", "ct", "bct" for series inputs.</li>
+<li>window : int
+Sakoe-Chiba band width.  None = unconstrained (default: None).</li>
+<li>title : str
+Figure-level title.</li>
+<li>save_path : str
+If given, saves the figure to this path.</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>(fig, axes_array) : tuple
+Figure and array of 2 axes [cost matrix, series alignment].</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="plots.html">aule.plots</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_dtw_alignment</span>
+
+<span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="n">gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">*</span> <span class="mf">1.15</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plot_dtw_alignment</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+
+
+                            </div>
                             <div id="aule.plot_ensemble_spread_map" class="classattr">
                                         <input id="aule.plot_ensemble_spread_map-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">plot_ensemble_spread_map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_ensemble</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">lat</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">lon</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Ensemble spread (1 sigma)&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
+        <span class="name">plot_ensemble_spread_map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_ensemble</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">lat</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">lon</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Ensemble spread (1 sigma)&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="aule.plot_ensemble_spread_map-view-source"><span>View Source</span></label>
 
@@ -4071,7 +4528,7 @@ The matplotlib figure and axis, for further customization.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">plot_error_map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">lat</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">lon</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">abs_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">norm_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span>,</span><span class="param">	<span class="n">norm_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
+        <span class="name">plot_error_map</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">lat</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">lon</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">abs_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>,</span><span class="param">	<span class="n">norm_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span>,</span><span class="param">	<span class="n">norm_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="aule.plot_error_map-view-source"><span>View Source</span></label>
 
@@ -4155,7 +4612,7 @@ The matplotlib figure and axis, for further customization.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">plot_field_comparison</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">lat</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">lon</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">diff_norm_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span>,</span><span class="param">	<span class="n">diff_norm_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Ground truth vs prediction&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
+        <span class="name">plot_field_comparison</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">lat</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">lon</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">diff_norm_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span>,</span><span class="param">	<span class="n">diff_norm_kwargs</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Ground truth vs prediction&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="aule.plot_field_comparison-view-source"><span>View Source</span></label>
 
@@ -4307,7 +4764,7 @@ The matplotlib figure and axis, for further customization.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">plot_hovmoller</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">axis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lat&#39;</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Hovmoller diagram&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
+        <span class="name">plot_hovmoller</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">axis</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lat&#39;</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Hovmoller diagram&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="aule.plot_hovmoller-view-source"><span>View Source</span></label>
 
@@ -4374,6 +4831,145 @@ The matplotlib figure and axis, for further customization.</li>
 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="n">lat_idx</span> <span class="o">/</span> <span class="n">H</span> <span class="o">-</span> <span class="n">t_idx</span> <span class="o">/</span> <span class="n">T</span><span class="p">))</span> <span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">W</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_hovmoller</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;lat&quot;</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s2">&quot;hwct&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+
+
+                            </div>
+                            <div id="aule.plot_lag_correlation" class="classattr">
+                                        <input id="aule.plot_lag_correlation-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">plot_lag_correlation</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">max_lag</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Cross-correlation by lag&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="aule.plot_lag_correlation-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#aule.plot_lag_correlation"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="aule.plot_lag_correlation-86"><a href="#aule.plot_lag_correlation-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="aule.plot_lag_correlation-87"><a href="#aule.plot_lag_correlation-87"><span class="linenos">87</span></a>        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">auto_params</span><span class="p">:</span>
+</span><span id="aule.plot_lag_correlation-88"><a href="#aule.plot_lag_correlation-88"><span class="linenos">88</span></a>            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="aule.plot_lag_correlation-89"><a href="#aule.plot_lag_correlation-89"><span class="linenos">89</span></a>                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="aule.plot_lag_correlation-90"><a href="#aule.plot_lag_correlation-90"><span class="linenos">90</span></a>                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ignore_nan&quot;</span><span class="p">,):</span>
+</span><span id="aule.plot_lag_correlation-91"><a href="#aule.plot_lag_correlation-91"><span class="linenos">91</span></a>                    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="aule.plot_lag_correlation-92"><a href="#aule.plot_lag_correlation-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Plots the cross-correlation between ground truth and prediction
+as a bar chart over lags -max_lag … +max_lag.  The vertical dashed
+line marks lag 0; a peak to the right means the prediction leads
+the truth (the model is early), a peak to the left means it lags.</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>y_true : np.ndarray
+Ground truth, any spatial or series shape.</li>
+<li>y_pred : np.ndarray
+Prediction, same shape as y_true.</li>
+<li>max_lag : int
+Maximum absolute lag to plot (default: 20).</li>
+<li>data_format : str
+"bhwc" or "hwct" for 4D spatial inputs.</li>
+<li>axes : str
+One of "t", "c", "bt", "ct", "bct" for series inputs.</li>
+<li>ignore_nan : bool
+If True, NaN values are excluded (default: False).</li>
+<li>title : str
+Plot title.</li>
+<li>save_path : str
+If given, saves the figure to this path.</li>
+<li>ax : matplotlib.axes.Axes
+Existing axis to draw on.</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>(fig, ax) : tuple</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="plots.html">aule.plots</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_lag_correlation</span>
+
+<span class="n">gt</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="o">*</span><span class="n">gt</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plot_lag_correlation</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">max_lag</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">)</span>
+</code></pre>
+</div>
+</div>
+
+
+                            </div>
+                            <div id="aule.plot_multi_channel_series" class="classattr">
+                                        <input id="aule.plot_multi_channel_series-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">plot_multi_channel_series</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">data</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">channel_names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">axes</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ignore_nan</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>,</span><span class="param">	<span class="n">max_batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Multi-channel time series&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="aule.plot_multi_channel_series-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#aule.plot_multi_channel_series"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="aule.plot_multi_channel_series-86"><a href="#aule.plot_multi_channel_series-86"><span class="linenos">86</span></a>    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span id="aule.plot_multi_channel_series-87"><a href="#aule.plot_multi_channel_series-87"><span class="linenos">87</span></a>        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">auto_params</span><span class="p">:</span>
+</span><span id="aule.plot_multi_channel_series-88"><a href="#aule.plot_multi_channel_series-88"><span class="linenos">88</span></a>            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+</span><span id="aule.plot_multi_channel_series-89"><a href="#aule.plot_multi_channel_series-89"><span class="linenos">89</span></a>                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</span><span id="aule.plot_multi_channel_series-90"><a href="#aule.plot_multi_channel_series-90"><span class="linenos">90</span></a>                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;ignore_nan&quot;</span><span class="p">,):</span>
+</span><span id="aule.plot_multi_channel_series-91"><a href="#aule.plot_multi_channel_series-91"><span class="linenos">91</span></a>                    <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span><span id="aule.plot_multi_channel_series-92"><a href="#aule.plot_multi_channel_series-92"><span class="linenos">92</span></a>        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Plots each channel as a separate panel (subplot row), overlaying
+up to <code>max_batch</code> batch members as semi-transparent lines.  Useful
+for a quick visual inspection of multi-variable or multi-station
+time series.</p>
+
+<h2 id="parameters">Parameters:</h2>
+
+<ul>
+<li>data : np.ndarray
+Input array, any spatial or series shape.</li>
+<li>channel_names : sequence of str
+Optional labels for each channel/panel.</li>
+<li>data_format : str
+"bhwc" or "hwct" for 4D spatial inputs.</li>
+<li>axes : str
+One of "t", "c", "bt", "ct", "bct" for series inputs.</li>
+<li>ignore_nan : bool
+If True, NaN values are masked in each line (default: False).</li>
+<li>max_batch : int
+Maximum number of batch members to overlay per panel (default: 3).</li>
+<li>title : str
+Figure-level title.</li>
+<li>save_path : str
+If given, saves the figure to this path.</li>
+</ul>
+
+<h2 id="returns">Returns:</h2>
+
+<ul>
+<li>(fig, axes_array) : tuple
+Figure and 1D array of axes, one per channel.</li>
+</ul>
+
+<h2 id="usage">Usage:</h2>
+
+<div class="pdoc-code codehilite">
+<pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn"><a href="plots.html">aule.plots</a></span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_multi_channel_series</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plot_multi_channel_series</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="s2">&quot;bct&quot;</span><span class="p">,</span>
+                                      <span class="n">channel_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Temp&quot;</span><span class="p">,</span> <span class="s2">&quot;Precip&quot;</span><span class="p">,</span> <span class="s2">&quot;Wind&quot;</span><span class="p">])</span>
 </code></pre>
 </div>
 </div>
@@ -4654,7 +5250,7 @@ The matplotlib figure and axis, for further customization.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">plot_spectral_density</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Radially-averaged power spectral density&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
+        <span class="name">plot_spectral_density</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">time_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Radially-averaged power spectral density&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">ax</span><span class="p">:</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">axes</span><span class="o">.</span><span class="n">_axes</span><span class="o">.</span><span class="n">Axes</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="aule.plot_spectral_density-view-source"><span>View Source</span></label>
 
@@ -4930,7 +5526,7 @@ The matplotlib figure and axis, for further customization.</li>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">plot_time_evolution</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">time_indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Time evolution&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
+        <span class="name">plot_time_evolution</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">y_true</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">y_pred</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span>,</span><span class="param">	<span class="n">time_indices</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">batch_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">channel_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>,</span><span class="param">	<span class="n">data_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;Time evolution&#39;</span>,</span><span class="param">	<span class="n">save_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>,</span><span class="param">	<span class="o">*</span>,</span><span class="param">	<span class="n">force</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>:</span></span>
 
                 <label class="view-source-button" for="aule.plot_time_evolution-view-source"><span>View Source</span></label>
 
