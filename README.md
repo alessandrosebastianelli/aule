@@ -1,116 +1,181 @@
 # aule
 
-**aule** provides validation metrics and plots for machine learning model outputs,
-with a focus on earth observation and climate science use cases (gridded fields,
-ensembles, multi-temporal data).
+**Validation metrics and plots for machine learning models**, with a focus on earth observation and climate science.
 
-Named after Aulë, the Vala of craft in Tolkien's mythology — the one who forges
-and evaluates the work of his own hands.
+Named after Aulë, the Vala of craft in Tolkien's mythology.
 
-## Supported input shapes
+📓 **Extensive usage notebooks are available on [GitHub](https://github.com/alessandrosebastianelli/aule).**
 
-Every function accepts numpy arrays in one of four shapes:
+---
 
-- `(batch, H, W, C)`
-- `(batch, H, W, C, T)`
-- `(H, W, C)`
-- `(H, W, C, T)`
-
-When an array is 4D, pass `data_format="bhwc"` (default) or `data_format="hwct"`
-to disambiguate, since the two shapes cannot be told apart from shape alone.
-
-## Installation
+## Install
 
 ```bash
 pip install aule
 
-# with cartopy support for geographic basemaps
+# optional: geographic basemaps (cartopy)
 pip install aule[geo]
+
+# optional: progress bars on heavy loops (tqdm)
+pip install aule[progress]
 ```
 
-## Quick example
+---
+
+## Supported input shapes
+
+aule accepts two families of input, both normalised internally to a single canonical `(batch, H, W, C, T)` representation.
+
+### Spatial family
+
+| Shape | Meaning |
+|---|---|
+| `(H, W, C)` | single spatial field, one channel |
+| `(H, W, C, T)` | spatial field with time axis — pass `data_format="hwct"` |
+| `(batch, H, W, C)` | batch of spatial fields — pass `data_format="bhwc"` (default) |
+| `(batch, H, W, C, T)` | full spatio-temporal batch |
+
+### Series family (pure time series, no spatial extent)
+
+Pass the `axes` keyword to disambiguate:
+
+| Shape | `axes` |
+|---|---|
+| `(T,)` | `"t"` |
+| `(C,)` | `"c"` |
+| `(B, T)` | `"bt"` |
+| `(C, T)` | `"ct"` |
+| `(B, C, T)` | `"bct"` |
+
+Series inputs are promoted to `(B, 1, 1, C, T)` internally, so every generic metric (RMSE, MAE, Pearson r, …) works directly on them. Functions that genuinely need spatial or temporal extent (SSIM, gradient error, field comparison plots, …) raise a clear error on degenerate inputs; pass `force=True` to bypass with a warning.
+
+---
+
+## Quick start
 
 ```python
 import numpy as np
-from aule.metrics import rmse, mae, pearson_r, ssim
+import aule
+from aule.metrics import rmse, pearson_r, ssim
 from aule.plots import plot_field_comparison, plot_scatter
 
-gt   = np.random.rand(64, 64, 1)
+# ── spatial data ────────────────────────────────────────────────────────────
+gt   = np.random.rand(8, 64, 64, 1)
 pred = gt + np.random.normal(0, 0.1, gt.shape)
 
 print(rmse(gt, pred))
 print(pearson_r(gt, pred))
+print(ssim(gt, pred))
 
-fig, axes = plot_field_comparison(gt, pred)
-fig, ax = plot_scatter(gt, pred, save_path="scatter.png")
+fig, axes = plot_field_comparison(gt[0], pred[0])
+fig, ax   = plot_scatter(gt, pred)
+
+# ── pure time series ─────────────────────────────────────────────────────────
+ts_gt   = np.random.randn(4, 3, 200)   # (B=4, C=3, T=200)
+ts_pred = np.roll(ts_gt, 5, axis=-1) + 0.05 * np.random.randn(*ts_gt.shape)
+
+print(rmse(ts_gt, ts_pred, axes="bct"))
+print(pearson_r(ts_gt, ts_pred, axes="bct"))
+
+from aule.metrics import lag_correlation, dtw_distance
+from aule.plots  import plot_lag_correlation, plot_multi_channel_series
+
+corr = lag_correlation(ts_gt, ts_pred, max_lag=30, axes="bct")
+dtw  = dtw_distance(ts_gt, ts_pred, axes="bct")
+
+fig, ax  = plot_lag_correlation(ts_gt, ts_pred, max_lag=30, axes="bct")
+fig, axs = plot_multi_channel_series(ts_gt, axes="bct",
+                                      channel_names=["Temp", "Precip", "Wind"])
 ```
 
-## What's included
+---
 
-Metrics are organized by family in `aule.metrics`, all importable directly from `aule.metrics`:
+## Logging
 
-- **core**: `rmse`, `mse`, `mae`, `bias`, `pearson_r`, `ssim`, `psnr`, `r2_score`, `mape`, `smape`, `nse`, `kge`, `max_error`, `explained_variance`, `wasserstein_distance`, `quantile_mapping_bias`
-- **spectral**: `spectral_error`, `gradient_error`, `psd_radial_error`, `spectral_angle_mapper`
-- **climate**: `seasonal_error`, `percentile_error`, `pixelwise_temporal_correlation`, `trend_error`, `extreme_event_duration_error`, `autocorrelation_error`, `wet_day_frequency_error`, `dry_spell_error`, `anomaly_correlation_coefficient`
-- **ensemble**: `ensemble_spread`, `crps`, `rank_histogram`, `brier_score`, `spread_skill_ratio`, `crps_skill_score`
-- **earth_observation**: `normalized_difference_index`, `index_error`, `change_detection_error`
-- **classification**: `iou`, `dice`, `precision_recall_f1`, `confusion_matrix_metrics`, `cohen_kappa` (binary or multi-class, via `average`/`num_classes`)
-- **uncertainty**: `picp`, `pit_histogram`
-- **spatial_verification**: `fractions_skill_score` (neighborhood-based, displacement-tolerant), `energy_score` (multivariate CRPS generalization)
-
-Plots are organized similarly in `aule.plots`:
-
-- **core**: `plot_scatter`, `plot_qq`, `plot_histogram_comparison`, `plot_error_histogram`
-- **spatial**: `plot_field_comparison`, `plot_bias_map`, `plot_correlation_map` (optional cartopy basemap via `lat`/`lon`)
-- **climate**: `plot_temporal_trend`, `plot_temporal_scatter`
-- **ensemble**: `plot_ensemble_spread_map`, `plot_rank_histogram`
-- **diagnostics**: `plot_taylor_diagram`, `plot_boxplot_comparison`, `plot_violin_comparison`, `plot_time_series`, `plot_error_map`
-- **classification**: `plot_confusion_matrix`, `plot_reliability_diagram`
-- **advanced**: `plot_hovmoller`, `plot_cdf_comparison`, `plot_spectral_density`, `plot_time_evolution`
-
-## Divergent colormap normalizations
-
-`plot_bias_map`, `plot_error_map` (signed branch), and `plot_field_comparison`
-(difference panel) expose a `norm_type` parameter to better highlight extreme
-values on divergent maps, beyond the default `"linear"` scaling:
-
-- `"power"`: power-law compression of the near-zero range (tune via `gamma`
-  in `norm_kwargs`, default 0.5); a smooth, mild way to make extremes stand
-  out more without disturbing background noise.
-- `"symlog"`: linear near zero (within `linthresh`), logarithmic beyond it;
-  the strongest extreme-value contrast, at the cost of making near-threshold
-  noise visible as speckle.
-- `"twoslope"`: anchors a (possibly off-zero) `vcenter` to the colormap
-  midpoint, for data that isn't symmetric around zero.
+aule is silent by default. Enable structured, coloured log output with a single call:
 
 ```python
-from aule.plots import plot_bias_map
+import aule
+aule.set_log_level("DEBUG")   # DEBUG | INFO | WARNING | ERROR
+# or via environment variable before importing:
+# AULE_LOG_LEVEL=INFO python my_script.py
+```
 
+---
+
+## Metrics
+
+All importable directly from `aule.metrics`.
+
+**Core** — `rmse`, `mse`, `mae`, `bias`, `pearson_r`, `ssim`, `psnr`, `r2_score`, `mape`, `smape`, `nse`, `kge`, `max_error`, `explained_variance`, `wasserstein_distance`, `quantile_mapping_bias`
+
+**Spectral / gradient** — `spectral_error`, `gradient_error`, `psd_radial_error`, `spectral_angle_mapper`
+
+**Climate** — `seasonal_error`, `percentile_error`, `pixelwise_temporal_correlation`, `trend_error`, `extreme_event_duration_error`, `autocorrelation_error`, `wet_day_frequency_error`, `dry_spell_error`, `anomaly_correlation_coefficient`
+
+**Ensemble** — `ensemble_spread`, `crps`, `rank_histogram`, `brier_score`, `spread_skill_ratio`, `crps_skill_score`
+
+**Earth observation** — `normalized_difference_index`, `index_error`, `change_detection_error`
+
+**Classification / segmentation** — `iou`, `dice`, `precision_recall_f1`, `confusion_matrix_metrics`, `cohen_kappa`
+
+**Uncertainty** — `picp`, `pit_histogram`
+
+**Spatial verification** — `fractions_skill_score` (FSS), `energy_score`
+
+**Time series** — `lag_correlation`, `cross_channel_correlation`, `peak_timing_error`, `dtw_distance`
+
+---
+
+## Plots
+
+All importable directly from `aule.plots`.
+
+**Core** — `plot_scatter`, `plot_qq`, `plot_histogram_comparison`, `plot_error_histogram`
+
+**Spatial** — `plot_field_comparison`, `plot_bias_map`, `plot_correlation_map`
+
+**Climate** — `plot_temporal_trend`, `plot_temporal_scatter`
+
+**Ensemble** — `plot_ensemble_spread_map`, `plot_rank_histogram`
+
+**Diagnostics** — `plot_taylor_diagram`, `plot_boxplot_comparison`, `plot_violin_comparison`, `plot_time_series`, `plot_error_map`
+
+**Classification** — `plot_confusion_matrix`, `plot_reliability_diagram`
+
+**Advanced** — `plot_hovmoller`, `plot_cdf_comparison`, `plot_spectral_density`, `plot_time_evolution`
+
+**Time series** — `plot_lag_correlation`, `plot_multi_channel_series`, `plot_dtw_alignment`, `plot_channel_correlation_matrix`
+
+Spatial plots accept optional `lat`/`lon` arrays for a cartopy basemap (requires `aule[geo]`). Every plot returns `(fig, ax)` and accepts an optional `save_path`.
+
+### Divergent colormap normalizations
+
+`plot_bias_map`, `plot_error_map`, and `plot_field_comparison` accept `norm_type` to control how extreme values stand out:
+
+```python
 fig, ax = plot_bias_map(gt, pred, norm_type="symlog", norm_kwargs={"linthresh": 0.02})
+# norm_type options: "linear" (default) | "power" | "symlog" | "twoslope"
 ```
 
-The underlying normalization builders (`power_norm`, `symlog_norm`,
-`asymmetric_twoslope_norm`, and the `resolve_diverging_norm` dispatcher) are
-available directly from `aule.plots._style` for custom plots.
+---
 
-## Automatic validation report
+## Shape guardrails
 
-`aule.report.generate_report` runs a curated set of metrics and plots and assembles
-them into a single self-contained HTML file (no external assets, figures embedded
-as base64 PNGs):
+Functions that require genuine spatial or temporal extent declare this explicitly. Passing a degenerate input raises a descriptive error:
 
 ```python
-from aule.report import generate_report
+series_gt = np.random.randn(1, 1, 4)   # H=W=1 — no real spatial extent
+ssim(series_gt, series_gt)              # raises ValueError with a clear message
 
-generate_report(gt, pred, save_path="report.html")
+ssim(series_gt, series_gt, force=True)  # proceeds anyway with a warning
 ```
 
-## Object-oriented usage
+---
 
-Every metric and plot is also available as a method on the `aule` class,
-which binds `y_true`/`y_pred` (and optionally `data_format`/`ignore_nan`)
-once. New functions added to `aule.metrics` or `aule.plots` are picked up
-automatically, no extra wiring needed.
+## Object-oriented API
+
+Bind arrays once, call everything as a method — including all new functions:
 
 ```python
 from aule import aule
@@ -118,29 +183,28 @@ from aule import aule
 v = aule(gt, pred)
 print(v.rmse())
 print(v.pearson_r())
-fig, ax = v.plot_scatter(save_path="scatter.png")
+fig, ax = v.plot_scatter()
+fig, ax = v.plot_bias_map(norm_type="power")
 ```
 
-## Notebooks
+---
 
-The `notebooks/` folder contains worked examples for every metric and plot
-family, each runnable end-to-end:
+## Automatic validation report
 
-1. `01_core_metrics.ipynb`
-2. `02_spectral_and_earth_observation_metrics.ipynb`
-3. `03_climate_metrics.ipynb`
-4. `04_ensemble_and_uncertainty_metrics.ipynb`
-5. `05_classification_metrics.ipynb`
-6. `06_plots.ipynb`
-7. `07_aule_class.ipynb`
-8. `08_spatial_verification_and_advanced_plots.ipynb`
-9. `09_validation_report.ipynb`
-10. `10_color_normalization.ipynb`
+```python
+from aule.report import generate_report
+
+generate_report(gt, pred, save_path="report.html")
+```
+
+Produces a self-contained HTML file (figures embedded as base64 PNGs) with a metrics table and all key plots.
+
+---
 
 ## Documentation
-
-The documentation is produced using [pdoc](https://pdoc.dev).
 
 ```bash
 python build_doc.py
 ```
+
+Documentation is built with [pdoc](https://pdoc.dev).
