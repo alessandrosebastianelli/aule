@@ -14,10 +14,10 @@ Named after Aulë, the Vala of craft in Tolkien's mythology.
 pip install aule
 
 # optional: geographic basemaps (cartopy)
-pip install aule[geo]
+pip install "aule[geo]"
 
 # optional: progress bars on heavy loops (tqdm)
-pip install aule[progress]
+pip install "aule[progress]"
 ```
 
 ---
