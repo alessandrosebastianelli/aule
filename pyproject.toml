@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aule"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
   { name="Alessandro Sebastianelli", email="asebastianelli@ieee.org" },
 ]
@@ -28,6 +28,7 @@ dependencies = [
 [project.optional-dependencies]
 geo = ["cartopy"]
 dev = ["pytest"]
+progress = ["tqdm"]
 
 [project.urls]
 "Homepage" = "https://github.com/alessandrosebastianelli/aule"

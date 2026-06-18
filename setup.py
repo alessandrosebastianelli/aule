@@ -16,7 +16,7 @@ def readme():
 # Package 
 HERE = pathlib.Path(__file__).parent
 PACKAGE_NAME  = 'aule'
-VERSION = '0.0.4'
+VERSION = '0.0.5'
 AUTHOR = 'Alessandro Sebastianelli'
 AUTHOR_EMAIL = 'asebastianelli@ieee.org'
 URL = 'https://github.com/alessandrosebastianelli/aule.git'
