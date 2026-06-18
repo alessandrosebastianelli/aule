@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from .._shapes import match_shapes, to_canonical
+from .._guards import requires
 from ._style import apply_style, maybe_save
 
 __all__ = ["plot_taylor_diagram", "plot_boxplot_comparison", "plot_violin_comparison", "plot_time_series", "plot_error_map"]
@@ -403,6 +404,7 @@ def plot_time_series(
     return fig, ax
 
 
+@requires(spatial=True)
 def plot_error_map(
     y_true: np.ndarray,
     y_pred: np.ndarray,

@@ -11,6 +11,7 @@ from typing import Optional
 import numpy as np
 
 from .._shapes import match_shapes, to_canonical, apply_nan_mask, finite_mask
+from .._guards import requires
 
 __all__ = [
     "seasonal_error", "percentile_error", "pixelwise_temporal_correlation",
@@ -213,6 +214,7 @@ def pixelwise_temporal_correlation(
     return r_map
 
 
+@requires(temporal=True)
 def trend_error(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -237,6 +239,12 @@ def trend_error(
             "hwct" here, since a time axis is required.
         - ignore_nan : bool
             If True, non-finite values are excluded from the spatial means (default: False).
+        - force : bool
+            trend_error requires genuine temporal extent (T>1); by default
+            a degenerate input raises a clear error. `force=True` only
+            bypasses this initial check - it cannot make a trend
+            computable from a single time step (T=1 has no slope to fit),
+            so the underlying T>=2 requirement still applies regardless (default: False).
 
         Returns:
         --------
@@ -313,6 +321,7 @@ def _event_durations(series: np.ndarray, threshold: float, above: bool) -> np.nd
     return (ends - starts).astype(np.int64)
 
 
+@requires(temporal=True)
 def extreme_event_duration_error(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -383,6 +392,7 @@ def extreme_event_duration_error(
     return float(np.abs(true_avg - pred_avg))
 
 
+@requires(temporal=True)
 def autocorrelation_error(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -459,6 +469,7 @@ def autocorrelation_error(
     return float(np.mean(np.abs(true_acf - pred_acf)))
 
 
+@requires(temporal=True)
 def wet_day_frequency_error(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -528,6 +539,7 @@ def dry_spell_error(
     threshold: float = 1.0,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    force: bool = False,
 ) -> float:
     '''
         Computes the absolute difference in mean dry-spell length (runs of
@@ -551,6 +563,9 @@ def dry_spell_error(
             "hwct" here, since a time axis is required.
         - ignore_nan : bool
             If True, non-finite values are excluded from the spatial means (default: False).
+        - force : bool
+            Forwarded to `extreme_event_duration_error`, which requires
+            genuine temporal extent (T>1); see its docstring (default: False).
 
         Returns:
         --------
@@ -573,7 +588,7 @@ def dry_spell_error(
 
     return extreme_event_duration_error(
         y_true, y_pred, threshold=threshold, above=False,
-        data_format=data_format, ignore_nan=ignore_nan,
+        data_format=data_format, ignore_nan=ignore_nan, force=force,
     )
 
 

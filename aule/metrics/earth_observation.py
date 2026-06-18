@@ -12,6 +12,7 @@ from typing import Optional
 import numpy as np
 
 from .._shapes import match_shapes, to_canonical
+from .._guards import requires
 
 __all__ = ["normalized_difference_index", "index_error", "change_detection_error"]
 
@@ -121,6 +122,7 @@ def index_error(
     return float(np.sqrt(np.mean(diff ** 2)))
 
 
+@requires(temporal=True)
 def change_detection_error(
     y_true: np.ndarray,
     y_pred: np.ndarray,

@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from .._shapes import to_canonical
+from .._guards import requires
 from ._style import apply_style, symmetric_norm, sequential_norm, make_geo_axis, maybe_save, resolve_diverging_norm, DIVERGING_CMAP, DIFF_CMAP
 
 __all__ = ["plot_field_comparison", "plot_bias_map", "plot_correlation_map"]
@@ -84,6 +85,7 @@ def _draw_field(
     return im
 
 
+@requires(spatial=True)
 def plot_field_comparison(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -191,6 +193,7 @@ def plot_field_comparison(
     return fig, axes
 
 
+@requires(spatial=True)
 def plot_bias_map(
     y_true: np.ndarray,
     y_pred: np.ndarray,

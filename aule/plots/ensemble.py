@@ -7,11 +7,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from .._shapes import to_canonical
+from .._guards import requires
 from ._style import apply_style, sequential_norm, make_geo_axis, maybe_save, SEQUENTIAL_CMAP
 
 __all__ = ["plot_ensemble_spread_map", "plot_rank_histogram"]
 
 
+@requires(spatial=True, array_args=("y_ensemble",))
 def plot_ensemble_spread_map(
     y_ensemble: np.ndarray,
     lat: Optional[np.ndarray] = None,

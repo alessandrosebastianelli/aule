@@ -9,6 +9,7 @@ from typing import Optional
 import numpy as np
 
 from .._shapes import match_shapes, to_canonical
+from .._guards import requires
 
 __all__ = ["fractions_skill_score", "energy_score"]
 
@@ -53,6 +54,7 @@ def _box_fraction_field(binary_field: np.ndarray, window: int) -> np.ndarray:
     return box_sum / float(window * window)
 
 
+@requires(spatial=True)
 def fractions_skill_score(
     y_true: np.ndarray,
     y_pred: np.ndarray,

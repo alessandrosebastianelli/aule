@@ -10,10 +10,27 @@ from typing import Optional
 import numpy as np
 
 from .._shapes import match_shapes, apply_nan_mask
+from .._guards import requires
+from .._logging import logger
+
+try:
+    from tqdm import tqdm as _tqdm
+    _HAS_TQDM = True
+except ImportError:
+    _HAS_TQDM = False
+
+_TQDM_THRESHOLD = 4
+
+
+def _progress(iterable, desc: str, total: int):
+    if _HAS_TQDM and total > _TQDM_THRESHOLD:
+        return _tqdm(iterable, desc=desc, total=total, leave=False)
+    return iterable
 
 __all__ = ["spectral_error", "gradient_error", "psd_radial_error", "spectral_angle_mapper"]
 
 
+@requires(spatial=True)
 def spectral_error(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -110,6 +127,7 @@ def _sobel_gradient(field: np.ndarray, kx: np.ndarray, ky: np.ndarray) -> tuple:
     return gx, gy
 
 
+@requires(spatial=True)
 def gradient_error(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -163,8 +181,9 @@ def gradient_error(
     kx, ky = _sobel_kernels()
 
     B, H, W, C, T = y_true_c.shape
+    logger.debug("gradient_error: %d slices (B=%d, C=%d, T=%d)", B*C*T, B, C, T)
     errors = []
-    for b in range(B):
+    for b in _progress(range(B), "gradient_error [batch]", B):
         for c in range(C):
             for t in range(T):
                 true2d = y_true_c[b, :, :, c, t].astype(np.float64)
@@ -221,6 +240,7 @@ def _radial_average(psd_2d: np.ndarray) -> np.ndarray:
     return profile / counts
 
 
+@requires(spatial=True)
 def psd_radial_error(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -268,8 +288,9 @@ def psd_radial_error(
     y_true_c, y_pred_c = apply_nan_mask(y_true_c, y_pred_c, ignore_nan=ignore_nan)
 
     B, H, W, C, T = y_true_c.shape
+    logger.debug("psd_radial_error: %d slices", B*C*T)
     errors = []
-    for b in range(B):
+    for b in _progress(range(B), "psd_radial_error [batch]", B):
         for c in range(C):
             for t in range(T):
                 true2d = y_true_c[b, :, :, c, t].astype(np.float64)

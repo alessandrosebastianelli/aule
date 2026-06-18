@@ -20,6 +20,13 @@ import matplotlib.pyplot as plt
 from ._shapes import to_canonical
 from . import metrics as _m
 from . import plots as _p
+from ._logging import logger
+
+try:
+    from tqdm import tqdm as _tqdm
+    _HAS_TQDM = True
+except ImportError:
+    _HAS_TQDM = False
 
 __all__ = ["generate_report"]
 
@@ -169,54 +176,64 @@ def generate_report(
     ]
 
     metric_rows = []
-    for name, fn in metric_specs:
+    metric_iter = _tqdm(metric_specs, desc="report: metrics") if _HAS_TQDM else metric_specs
+    for name, fn in metric_iter:
+        logger.debug("report: computing %s", name)
         value, error = _safe_call(fn, y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
         metric_rows.append((name, _format_value(value) if error is None else f"n/a ({error})"))
 
     if has_multi_sample:
+        logger.debug("report: computing pixelwise_temporal_correlation")
         value, error = _safe_call(_m.pixelwise_temporal_correlation, y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
         if error is None:
             metric_rows.append(("Mean pixelwise temporal correlation", _format_value(float(np.mean(value)))))
 
     if has_time_axis:
-        for name, fn in [
+        time_metrics = [
             ("Seasonal error", _m.seasonal_error),
             ("Trend error", _m.trend_error),
             ("Autocorrelation error", _m.autocorrelation_error),
-        ]:
+        ]
+        for name, fn in time_metrics:
+            logger.debug("report: computing %s", name)
             value, error = _safe_call(fn, y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
             metric_rows.append((name, _format_value(value) if error is None else f"n/a ({error})"))
 
     # --- plots ---
-    plot_images = []
-
-    fig, _ = _p.plot_scatter(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
-    plot_images.append(("Scatter: ground truth vs prediction", _fig_to_base64(fig)))
-
-    fig, _ = _p.plot_histogram_comparison(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
-    plot_images.append(("Distribution comparison", _fig_to_base64(fig)))
-
-    fig, _ = _p.plot_cdf_comparison(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
-    plot_images.append(("CDF comparison", _fig_to_base64(fig)))
-
-    fig, _ = _p.plot_error_histogram(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
-    plot_images.append(("Error distribution", _fig_to_base64(fig)))
-
-    fig, _ = _p.plot_field_comparison(y_true, y_pred, data_format=data_format)
-    plot_images.append(("Field comparison (first slice)", _fig_to_base64(fig)))
-
-    fig, _ = _p.plot_error_map(y_true, y_pred, data_format=data_format)
-    plot_images.append(("Absolute error map (first slice)", _fig_to_base64(fig)))
-
-    fig, _ = _p.plot_boxplot_comparison(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
-    plot_images.append(("Box plot comparison", _fig_to_base64(fig)))
-
-    fig, _ = _p.plot_taylor_diagram(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
-    plot_images.append(("Taylor diagram", _fig_to_base64(fig)))
-
+    plot_specs = [
+        ("Scatter: ground truth vs prediction",
+         lambda: _p.plot_scatter(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)),
+        ("Distribution comparison",
+         lambda: _p.plot_histogram_comparison(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)),
+        ("CDF comparison",
+         lambda: _p.plot_cdf_comparison(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)),
+        ("Error distribution",
+         lambda: _p.plot_error_histogram(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)),
+        ("Field comparison (first slice)",
+         lambda: _p.plot_field_comparison(y_true, y_pred, data_format=data_format)),
+        ("Absolute error map (first slice)",
+         lambda: _p.plot_error_map(y_true, y_pred, data_format=data_format)),
+        ("Box plot comparison",
+         lambda: _p.plot_boxplot_comparison(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)),
+        ("Taylor diagram",
+         lambda: _p.plot_taylor_diagram(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)),
+    ]
     if has_time_axis:
-        fig, _ = _p.plot_temporal_trend(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan)
-        plot_images.append(("Spatial-mean temporal trend", _fig_to_base64(fig)))
+        plot_specs.append(
+            ("Spatial-mean temporal trend",
+             lambda: _p.plot_temporal_trend(y_true, y_pred, data_format=data_format, ignore_nan=ignore_nan))
+        )
+
+    plot_images = []
+    plot_iter = _tqdm(plot_specs, desc="report: plots") if _HAS_TQDM else plot_specs
+    for caption, fn in plot_iter:
+        logger.debug("report: generating plot '%s'", caption)
+        result, err = _safe_call(fn)
+        if result is not None:
+            fig, _ = result
+            plot_images.append((caption, _fig_to_base64(fig)))
+        else:
+            logger.warning("report: plot '%s' failed: %s", caption, err)
 
     # --- assemble HTML ---
     rows_html = "\n".join(

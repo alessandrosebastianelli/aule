@@ -9,11 +9,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from .._shapes import match_shapes, to_canonical
+from .._guards import requires
 from ._style import apply_style, maybe_save, sequential_norm, SEQUENTIAL_CMAP
 
 __all__ = ["plot_hovmoller", "plot_cdf_comparison", "plot_spectral_density", "plot_time_evolution"]
 
 
+@requires(spatial=True, temporal=True, array_args=("data",))
 def plot_hovmoller(
     data: np.ndarray,
     axis: str = "lat",
@@ -202,6 +204,7 @@ def plot_cdf_comparison(
     return fig, ax
 
 
+@requires(spatial=True)
 def plot_spectral_density(
     y_true: np.ndarray,
     y_pred: np.ndarray,
@@ -305,6 +308,7 @@ def plot_spectral_density(
     return fig, ax
 
 
+@requires(spatial=True, temporal=True)
 def plot_time_evolution(
     y_true: np.ndarray,
     y_pred: np.ndarray,

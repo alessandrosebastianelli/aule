@@ -15,6 +15,22 @@ from typing import Optional
 import numpy as np
 
 from .._shapes import match_shapes, apply_nan_mask, finite_mask
+from .._guards import requires
+from .._logging import logger
+
+try:
+    from tqdm import tqdm as _tqdm
+    _HAS_TQDM = True
+except ImportError:
+    _HAS_TQDM = False
+
+_TQDM_THRESHOLD = 4
+
+
+def _progress(iterable, desc: str, total: int):
+    if _HAS_TQDM and total > _TQDM_THRESHOLD:
+        return _tqdm(iterable, desc=desc, total=total, leave=False)
+    return iterable
 
 __all__ = [
     "rmse", "mse", "mae", "bias", "pearson_r", "ssim", "psnr",
@@ -28,6 +44,7 @@ def rmse(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Root Mean Squared Error between ground truth and prediction.
@@ -61,7 +78,7 @@ def rmse(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     diff = y_true_c.astype(np.float64) - y_pred_c.astype(np.float64)
 
@@ -77,6 +94,7 @@ def mae(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Mean Absolute Error between ground truth and prediction.
@@ -110,7 +128,7 @@ def mae(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     diff = np.abs(y_true_c.astype(np.float64) - y_pred_c.astype(np.float64))
 
@@ -126,6 +144,7 @@ def bias(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the mean bias (prediction minus ground truth).
@@ -159,7 +178,7 @@ def bias(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     diff = y_pred_c.astype(np.float64) - y_true_c.astype(np.float64)
 
@@ -175,6 +194,7 @@ def pearson_r(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Pearson correlation coefficient between ground truth
@@ -209,7 +229,7 @@ def pearson_r(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     a = y_true_c.astype(np.float64).ravel()
     b = y_pred_c.astype(np.float64).ravel()
@@ -290,12 +310,14 @@ def _ssim_2d(a: np.ndarray, b: np.ndarray, window: np.ndarray) -> float:
     return float(np.mean(numerator / np.clip(denominator, a_min=1e-12, a_max=None)))
 
 
+@requires(spatial=True)
 def ssim(
     y_true: np.ndarray,
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
     window_size: int = 11,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Structural Similarity Index (SSIM) between ground truth
@@ -314,6 +336,12 @@ def ssim(
             finite median before computing SSIM (default: False).
         - window_size : int
             Side length of the Gaussian window used for local statistics (default: 11).
+        - force : bool
+            SSIM requires genuine spatial extent (H>1 or W>1); by default,
+            a degenerate input (e.g. a pure time series promoted via
+            `axes=...`, with H=W=1) raises a clear error. Pass `force=True`
+            to proceed anyway (the result will be meaningless, since a
+            1x1 "image" has no local structure to compare) (default: False).
 
         Returns:
         --------
@@ -333,14 +361,16 @@ def ssim(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
     y_true_c, y_pred_c = apply_nan_mask(y_true_c, y_pred_c, ignore_nan=ignore_nan)
 
     window = _gaussian_window(window_size)
 
     B, H, W, C, T = y_true_c.shape
+    n_slices = B * C * T
+    logger.debug("ssim: computing over %d slices (B=%d, C=%d, T=%d)", n_slices, B, C, T)
     scores = []
-    for b in range(B):
+    for b in _progress(range(B), "ssim [batch]", B):
         for c in range(C):
             for t in range(T):
                 a2d = y_true_c[b, :, :, c, t].astype(np.float64)
@@ -355,6 +385,7 @@ def mse(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Mean Squared Error between ground truth and prediction.
@@ -388,7 +419,7 @@ def mse(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     diff = y_true_c.astype(np.float64) - y_pred_c.astype(np.float64)
 
@@ -405,6 +436,7 @@ def psnr(
     data_range: Optional[float] = None,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Peak Signal-to-Noise Ratio between ground truth and
@@ -443,7 +475,7 @@ def psnr(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     diff = y_true_c.astype(np.float64) - y_pred_c.astype(np.float64)
 
@@ -471,6 +503,7 @@ def r2_score(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the coefficient of determination (R^2): 1 minus the ratio
@@ -506,7 +539,7 @@ def r2_score(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     a = y_true_c.astype(np.float64).ravel()
     b = y_pred_c.astype(np.float64).ravel()
@@ -530,6 +563,7 @@ def mape(
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
     eps: float = 1e-8,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Mean Absolute Percentage Error. Sensitive to small
@@ -567,7 +601,7 @@ def mape(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     a = y_true_c.astype(np.float64)
     b = y_pred_c.astype(np.float64)
@@ -587,6 +621,7 @@ def smape(
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
     eps: float = 1e-8,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Symmetric Mean Absolute Percentage Error, bounded in
@@ -623,7 +658,7 @@ def smape(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     a = y_true_c.astype(np.float64)
     b = y_pred_c.astype(np.float64)
@@ -643,6 +678,7 @@ def nse(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the Nash-Sutcliffe Efficiency, a standard goodness-of-fit
@@ -687,6 +723,7 @@ def kge(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> dict:
     '''
         Computes the Kling-Gupta Efficiency and its three components
@@ -726,7 +763,7 @@ def kge(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     a = y_true_c.astype(np.float64).ravel()
     b = y_pred_c.astype(np.float64).ravel()
@@ -755,6 +792,7 @@ def max_error(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the maximum absolute error between ground truth and prediction.
@@ -788,7 +826,7 @@ def max_error(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     diff = np.abs(y_true_c.astype(np.float64) - y_pred_c.astype(np.float64))
 
@@ -804,6 +842,7 @@ def explained_variance(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the fraction of ground truth variance explained by the
@@ -839,7 +878,7 @@ def explained_variance(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     a = y_true_c.astype(np.float64).ravel()
     b = y_pred_c.astype(np.float64).ravel()
@@ -860,6 +899,7 @@ def wasserstein_distance(
     y_pred: np.ndarray,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the 1D Wasserstein distance (Earth Mover's Distance)
@@ -900,7 +940,7 @@ def wasserstein_distance(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     a = y_true_c.astype(np.float64).ravel()
     b = y_pred_c.astype(np.float64).ravel()
@@ -929,6 +969,7 @@ def quantile_mapping_bias(
     n_quantiles: int = 100,
     data_format: Optional[str] = None,
     ignore_nan: bool = False,
+    axes: Optional[str] = None,
 ) -> float:
     '''
         Computes the mean absolute difference between the quantile function
@@ -971,7 +1012,7 @@ def quantile_mapping_bias(
         ```
     '''
 
-    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format)
+    y_true_c, y_pred_c = match_shapes(y_true, y_pred, data_format=data_format, axes=axes)
 
     a = y_true_c.astype(np.float64).ravel()
     b = y_pred_c.astype(np.float64).ravel()
